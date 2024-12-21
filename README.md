@@ -1,13 +1,12 @@
 # Compute the minimal enclosing circle
 
-We use different solvers and compare readability and speed. 
+We use different solvers and compare readability and speed.
 
 ## The problem
 
 Given $N$ random points in an $m$ dimensional space we compute
-the center $x$ and the radius $r$ of a ball such that all $N$ 
-points are contained in this ball.  
-
+the center $x$ and the radius $r$ of a ball such that all $N$
+points are contained in this ball.
 
 ## Makefile
 
