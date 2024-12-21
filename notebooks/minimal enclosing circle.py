@@ -93,13 +93,43 @@ def _():
             M.objective('obj', mf.ObjectiveSense.Minimize, r)
             M.solve()
             return {"Radius": r.level(), "Midpoint": x.level()}
-
     return mf, min_circle_mosek
 
 
 @app.cell
 def _(min_circle_mosek, pos):
     min_circle_mosek(points=pos)
+    return
+
+
+@app.cell
+def _(np):
+    import hexaly.optimizer
+
+    def min_circle_hexaly(points, **kwargs):
+        with hexaly.optimizer.HexalyOptimizer() as optimizer:
+            #
+            # Declare the optimization model
+            #
+            model = optimizer.model
+
+            z = np.array([model.float(np.min(points[:,j]), np.max(points[:,j])) for j in range(points.shape[1])])
+
+            radius = [np.sum((z - point) ** 2) for point in points]
+
+            # Minimize the radius r
+            r = model.sqrt(model.max(radius))
+            model.minimize(r)
+            model.close()
+
+            optimizer.solve()
+            return {"Radius": r.value, "Midpoint": z.level}
+    return hexaly, min_circle_hexaly
+
+
+@app.cell
+def _(min_circle_hexaly, pos):
+    min_circle_hexaly(points=pos)
     return
 
 
