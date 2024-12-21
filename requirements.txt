@@ -1,0 +1,8 @@
+cvxpy-base
+clarabel
+numpy
+plotly
+
+# we also install them on the fly in the Makefile
+marimo
+pre-commit
