@@ -1,8 +1,14 @@
+--extra-index-url https://pip.hexaly.com
+
 cvxpy-base
-clarabel
 numpy
 plotly
 
 # we also install them on the fly in the Makefile
 marimo
 pre-commit
+
+# Install solvers
+clarabel
+mosek
+hexaly
