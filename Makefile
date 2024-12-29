@@ -32,4 +32,5 @@ help:  ## Display this help screen
 
 .PHONY: marimo
 marimo: install ## Install Marimo
-	@uvx marimo edit notebooks
+	@uv pip install marimo
+	@uv run marimo edit notebooks
