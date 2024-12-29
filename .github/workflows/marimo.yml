@@ -30,10 +30,10 @@ jobs:
       - name: Convert notebooks to HTML
         run: |
           mkdir -p html_exports
-          find . -name "*.ipynb" -not -path "./html_exports/*" -exec sh -c '
-            for notebook do
-              echo "Converting $notebook..."
-              filename=$(basename "$notebook" .ipynb)
-              marimo export --format html "$notebook" --output "html_exports/${filename}.html" || echo "Failed to convert $notebook"
-            done
-          ' sh {} +
+          for file in notebooks/*.py; do
+            if [ -f "$file" ]; then
+              filename=$(basename "$file" .py)
+              echo "Converting $filename.py to HTML..."
+              #uv run marimo export html "$file" -o "${{ inputs.output_dir }}/${filename}.html"
+            fi
+          done
