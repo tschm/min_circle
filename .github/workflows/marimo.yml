@@ -26,3 +26,14 @@ jobs:
       - name: Install marimo
         run: |
           uv pip install --no-cache-dir  marimo
+
+      - name: Convert notebooks to HTML
+        run: |
+          mkdir -p html_exports
+          find . -name "*.ipynb" -not -path "./html_exports/*" -exec sh -c '
+            for notebook do
+              echo "Converting $notebook..."
+              filename=$(basename "$notebook" .ipynb)
+              marimo export --format html "$notebook" --output "html_exports/${filename}.html" || echo "Failed to convert $notebook"
+            done
+          ' sh {} +
