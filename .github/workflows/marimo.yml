@@ -34,6 +34,6 @@ jobs:
             if [ -f "$file" ]; then
               filename=$(basename "$file" .py)
               echo "Converting $filename.py to HTML..."
-              #uv run marimo export html "$file" -o "${{ inputs.output_dir }}/${filename}.html"
+              uv run marimo export html "$file" -o "html_exports/${filename}.html"
             fi
           done
