@@ -1,12 +1,10 @@
 name: Install Dependencies with UV
 
 on:
-  workflow_call:
-    inputs:
-      python-version:
-        required: true
-        type: string
-        description: 'Python version to use (e.g., "3.11")'
+  pull_request:
+  push:
+    branches: [main, master]
+
 
 jobs:
   install:
