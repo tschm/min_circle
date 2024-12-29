@@ -10,11 +10,23 @@ def _():
     return (mo,)
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""# Implement with cvxpy""")
+    return
+
+
 @app.cell
 def _():
     import plotly.graph_objects as go
     import numpy as np
     return go, np
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""# Generate a cloud of points""")
+    return
 
 
 @app.cell
@@ -135,6 +147,18 @@ def _(min_circle_hexaly, pos):
 
 @app.cell
 def _():
+    return
+
+
+@app.cell
+def _(min_circle_cvx, pos):
+    min_circle_cvx(points=pos, solver="MOSEK")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""# Implement with Mosek Fusion""")
     return
 
 

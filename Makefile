@@ -1,7 +1,6 @@
 .DEFAULT_GOAL := help
 
-.PHONY: venv
-venv: ## Create the virtual environment
+venv:
 	@curl -LsSf https://astral.sh/uv/install.sh | sh
 	@uv venv
 
