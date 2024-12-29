@@ -5,6 +5,9 @@ on:
   push:
     branches: [main, master]
 
+permissions:
+  contents: read
+
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
@@ -14,6 +17,6 @@ jobs:
           fetch-depth: 0
 
       - name: run pre-commit
-        uses: pre-commit/action@v3.0.1
+        uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd
         with:
           extra_args: '--verbose --all-files --color always --show-diff-on-failure'
