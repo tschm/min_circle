@@ -15,11 +15,10 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v4
 
-      #- name: Install uv
-      #  run: |
-      #    curl -LsSf https://astral.sh/uv/install.sh | sh
-      #    echo "$HOME/.uv/bin" >> $GITHUB_PATH
-
       - name: Install dependencies with uv
         run: |
-          uv pip install -r requirements.txt
+          uv pip install --no-cache-dir  -r requirements.txt
+
+      - name: Install marimo
+        run: |
+          uv pip install --no-cache-dir  marimo
