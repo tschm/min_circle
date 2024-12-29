@@ -34,6 +34,7 @@ jobs:
             if [ -f "$file" ]; then
               filename=$(basename "$file" .py)
               echo "Converting $filename.py to HTML..."
-              uv run marimo export html "$file" -o "html_exports/${filename}.html"
+              # Can't work as it relies on license files not part of this repo
+              # uv run marimo export html "$file" -o "html_exports/${filename}.html"
             fi
           done
