@@ -1,0 +1,27 @@
+name: Install Dependencies with UV
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        required: true
+        type: string
+        description: 'Python version to use (e.g., "3.11")'
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      #- name: Install uv
+      #  run: |
+      #    curl -LsSf https://astral.sh/uv/install.sh | sh
+      #    echo "$HOME/.uv/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies with uv
+        run: |
+          uv pip install -r requirements.txt
