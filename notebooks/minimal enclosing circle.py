@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.10.6"
+__generated_with = "0.10.7"
 app = marimo.App(width="medium")
 
 
@@ -31,7 +31,7 @@ def _(mo):
 
 @app.cell
 def _(np):
-    pos = np.random.randn(100,2)
+    pos = np.random.randn(1000,3)
     return (pos,)
 
 
@@ -84,8 +84,33 @@ def _():
 
 
 @app.cell
+def _(cp):
+    def min_circle_cvx_cone(points, **kwargs):
+        # cvxpy variable for the radius
+        r = cp.Variable(1, name="Radius")
+        # cvxpy variable for the midpoint
+        x = cp.Variable(points.shape[1], name="Midpoint")
+
+        objective = cp.Minimize(r)
+        #constraints = [cp.SOC(np.ones(points.shape[0])*r, points - x, axis=1)]
+        constraints = [cp.SOC(r, point - x) for point in points]
+
+        problem = cp.Problem(objective=objective, constraints=constraints)
+        problem.solve(**kwargs)
+
+        return {"Radius": r.value, "Midpoint": x.value}
+    return (min_circle_cvx_cone,)
+
+
+@app.cell
 def _(min_circle_cvx, pos):
     min_circle_cvx(points=pos, solver="CLARABEL")
+    return
+
+
+@app.cell
+def _(min_circle_cvx_cone, pos):
+    min_circle_cvx_cone(points=pos, solver="CLARABEL")
     return
 
 
