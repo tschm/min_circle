@@ -10,5 +10,5 @@ pre-commit==4.0.1
 
 # Install solvers
 clarabel==0.9.0
-mosek==10.2.11
+mosek==10.2.12
 hexaly
