@@ -1,9 +1,7 @@
 name: Install Dependencies with UV
 
 on:
-  pull_request:
-  push:
-    branches: [main, master]
+  push
 
 permissions:
   contents: read
