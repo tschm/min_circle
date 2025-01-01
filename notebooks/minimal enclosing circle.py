@@ -7,6 +7,7 @@ app = marimo.App(width="medium")
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
 
 
@@ -20,6 +21,7 @@ def _(mo):
 def _():
     import plotly.graph_objects as go
     import numpy as np
+
     return go, np
 
 
@@ -31,22 +33,18 @@ def _(mo):
 
 @app.cell
 def _(np):
-    pos = np.random.randn(1000,11)
+    pos = np.random.randn(1000, 11)
     return (pos,)
 
 
 @app.cell
 def _(go, pos):
     # Create the scatter plot
-    fig = go.Figure(data=go.Scatter(
-        x=pos[:,0],
-        y=pos[:,1],
-        mode='markers',
-        marker=dict(
-            symbol='x',
-            size=10
+    fig = go.Figure(
+        data=go.Scatter(
+            x=pos[:, 0], y=pos[:, 1], mode="markers", marker=dict(symbol="x", size=10)
         )
-    ))
+    )
 
     # Update layout for equal aspect ratio and axis labels
     fig.update_layout(
@@ -55,7 +53,7 @@ def _(go, pos):
         yaxis=dict(
             scaleanchor="x",
             scaleratio=1,
-        )
+        ),
     )
 
     # Show the plot
@@ -80,6 +78,7 @@ def _():
         problem.solve(**kwargs)
 
         return {"Radius": r.value, "Midpoint": x.value}
+
     return cp, min_circle_cvx
 
 
@@ -96,7 +95,13 @@ def _(cp, np):
         # constraints = [cp.SOC(r, point - x) for point in points]
 
         # fast, but somewhat clumsy syntax
-        constraints = [cp.SOC(r*np.ones(points.shape[0]), points - cp.outer(np.ones(points.shape[0]), x), axis=1)]
+        constraints = [
+            cp.SOC(
+                r * np.ones(points.shape[0]),
+                points - cp.outer(np.ones(points.shape[0]), x),
+                axis=1,
+            )
+        ]
 
         problem = cp.Problem(objective=objective, constraints=constraints)
         problem.solve(**kwargs)
@@ -114,7 +119,7 @@ def _(min_circle_cvx, pos):
 
 @app.cell
 def _(min_circle_cvx_cone, pos):
-    min_circle_cvx_cone(points=pos, solver="CLARABEL")
+    min_circle_cvx_cone(points=pos, solver="MOSEK")
     return
 
 
@@ -129,11 +134,16 @@ def _():
 
             # see https://docs.mosek.com/latest/pythonfusion/modeling.html#vectorization
             for i, p in enumerate(points):
-                M.constraint(f"point_{i}", mf.Expr.vstack(r, mf.Expr.sub(x,p)), mf.Domain.inQCone())
+                M.constraint(
+                    f"point_{i}",
+                    mf.Expr.vstack(r, mf.Expr.sub(x, p)),
+                    mf.Domain.inQCone(),
+                )
 
-            M.objective('obj', mf.ObjectiveSense.Minimize, r)
+            M.objective("obj", mf.ObjectiveSense.Minimize, r)
             M.solve()
             return {"Radius": r.level(), "Midpoint": x.level()}
+
     return mf, min_circle_mosek
 
 
@@ -154,7 +164,12 @@ def _(np):
             #
             model = optimizer.model
 
-            z = np.array([model.float(np.min(points[:,j]), np.max(points[:,j])) for j in range(points.shape[1])])
+            z = np.array(
+                [
+                    model.float(np.min(points[:, j]), np.max(points[:, j]))
+                    for j in range(points.shape[1])
+                ]
+            )
 
             radius = [np.sum((z - point) ** 2) for point in points]
 
@@ -165,6 +180,7 @@ def _(np):
 
             optimizer.solve()
             return {"Radius": r.value, "Midpoint": z.level}
+
     return hexaly, min_circle_hexaly
 
 
