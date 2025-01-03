@@ -2,7 +2,7 @@
 
 cvxpy-base==1.6.0
 numpy==2.2.1
-scipy==1.14.1
+scipy==1.15.0
 plotly==5.24.1
 
 # we also install them on the fly in the Makefile
