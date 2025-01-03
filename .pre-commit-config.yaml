@@ -24,12 +24,6 @@ repos:
     hooks:
       - id: pyupgrade
 
-  - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.5
-    hooks:
-      - id: actionlint
-        args: [-ignore, SC]
-
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: 0.30.0
     hooks:
