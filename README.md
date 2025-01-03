@@ -2,6 +2,8 @@
 
 We use different solvers and compare readability and speed.
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/tschm/min_circle)
+
 ## The problem
 
 Given $N$ random points in an $m$ dimensional space we compute
