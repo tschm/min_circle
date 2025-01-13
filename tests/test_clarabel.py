@@ -25,7 +25,7 @@ def min_circle_cvx(points, **kwargs):
     return {"Radius": r.value, "Midpoint": x.value}
 
 
-def test_clarabel(np_points):
-    results = min_circle_cvx(np_points, solver="CLARABEL")
+def test_clarabel(points):
+    results = min_circle_cvx(np.array(points), solver="CLARABEL")
     assert results["Radius"] == pytest.approx(2.5)
     assert results["Midpoint"] == pytest.approx(np.array([2.0, 1.5]))

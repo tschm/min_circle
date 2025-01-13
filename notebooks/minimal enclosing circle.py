@@ -241,23 +241,19 @@ def _(mo):
 
 
 @app.cell
-def _(mosek, pos, stats, tt):
+def _(pos, stats, tt):
     from solver.welzl import welzl_min_circle
-    from solver.welzl import Point
 
-    # we perform a conversion to points
-    points = [Point(x=a[0], y=a[1]) for a in pos]
-
-    print(welzl_min_circle(points=points))
+    print(welzl_min_circle(points=list(pos)))
 
     def welzl():
-        welzl_min_circle(points=points)
+        welzl_min_circle(points=list(pos))
 
     # Run each 50 times
-    times_welzl = tt.repeat(mosek, number=1, repeat=50)
+    times_welzl = tt.repeat(welzl, number=1, repeat=100)
 
     print(f"Implementation average: {stats.mean(times_welzl):.6f} seconds")
-    return Point, points, times_welzl, welzl, welzl_min_circle
+    return times_welzl, welzl, welzl_min_circle
 
 
 @app.cell
