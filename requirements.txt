@@ -16,3 +16,4 @@ hexaly
 
 # for testing
 pytest
+pytest-cov

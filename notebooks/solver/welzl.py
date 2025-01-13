@@ -1,48 +1,83 @@
 from dataclasses import dataclass
 import random
 import numpy as np
-from typing import List, Optional
+from typing import List
+
+
+@dataclass(frozen=True)
+class Point:
+    x: float
+    y: float
+
+    @property
+    def array(self):
+        return np.array([self.x, self.y])
+
+    def __add__(self, other):
+        return Point(self.x + other.x, self.y + other.y)
+
+    def __mul__(self, other):
+        assert isinstance(other, float)
+        return Point(self.x * other, self.y * other)
+
+    def __sub__(self, other):
+        return Point(self.x - other.x, self.y - other.y)
+
+
+def norm(point: Point):
+    return np.linalg.norm(point.array)
 
 
 @dataclass(frozen=True)
 class Circle:
-    center: np.ndarray
+    center: Point
     radius: float
 
-    def contains(self, point: np.ndarray, tolerance: float = 1e-10) -> bool:
+    def contains(self, point: Point, tolerance: float = 1e-10) -> bool:
         """Check if a point lies within or on the circle."""
-        return np.linalg.norm(point - self.center) <= self.radius + tolerance
+        assert isinstance(point, Point)
+        return norm(point - self.center) <= self.radius + tolerance
 
 
-def make_circle_n_points(matrix: np.ndarray) -> Circle:
+# Calculate slopes of perpendicular bisectors
+def perpendicular_slope(p1, p2):
+    if p2[1] == p1[1]:  # horizontal line
+        return np.inf  # Perpendicular line is horizontal
+    return -(p2[0] - p1[0]) / (p2[1] - p1[1])
+
+
+def make_circle_n_points(matrix: List[Point]) -> Circle:
     """Construct a circle with n points."""
-    assert matrix.shape[0] <= 3
 
-    if matrix.shape[0] == 0:
-        return None
+    """Construct a circle from 1 to 3 points."""
+    num_points = len(matrix)
 
-    if matrix.shape[0] == 1:
-        return Circle(matrix[0], 0)
+    if num_points == 0:
+        return Circle(Point(x=0, y=0), -np.inf)
+        # return None  # No points, no circle
 
-    if matrix.shape[0] == 2:
-        center = (matrix[0] + matrix[1]) / 2
-        radius = np.linalg.norm(matrix[0] - center)
-        return Circle(center, radius)
+    if num_points == 1:
+        return Circle(matrix[0], 0)  # Single point, radius 0
 
-    if matrix.shape[0] == 3:
-        p1 = matrix[0, :]
-        p2 = matrix[1, :]
-        p3 = matrix[2, :]
+    if num_points == 2:
+        # Two points: the center is the midpoint, radius is half the distance
+        return Circle((matrix[0] + matrix[1]) * 0.5, norm(matrix[0] - matrix[1]) / 2.0)
+
+    if num_points == 3:
+        # For 3 points: use the circumcenter and circumradius formula
+        # p1, p2, p3 = matrix
+        p = np.array([x.array for x in matrix])
 
         # Midpoints of the sides
-        mid12 = (p1 + p2) / 2
-        mid23 = (p2 + p3) / 2
+        mid12 = (p[0] + p[1]) * 0.5
+        mid23 = (p[1] + p[2]) * 0.5
 
         # Slopes of the perpendicular bisectors
         # Perpendicular slope to line 1-2: m1
-        m1 = -(p2[0] - p1[0]) / (p2[1] - p1[1]) if p2[1] - p1[1] != 0 else np.inf
+        m1 = perpendicular_slope(p[1], p[0])
+
         # Perpendicular slope to line 2-3: m2
-        m2 = -(p3[0] - p2[0]) / (p3[1] - p2[1]) if p3[1] - p2[1] != 0 else np.inf
+        m2 = perpendicular_slope(p[1], p[2])
 
         # Use line equations to solve for the intersection (circumcenter)
         if m1 == np.inf:  # Line 1-2 is vertical, so we solve for x = mid12[0]
@@ -55,10 +90,8 @@ def make_circle_n_points(matrix: np.ndarray) -> Circle:
             # Calculate the intersection of the two perpendicular bisectors
             # y = m1 * (x - mid12[0]) + mid12[1]
             # y = m2 * (x - mid23[0]) + mid23[1]
-            A = m1
-            B = -1
-            C = m2
-            D = -1
+            A, B = m1, -1
+            C, D = m2, -1
             E = m1 * mid12[0] - mid12[1]
             F = m2 * mid23[0] - mid23[1]
 
@@ -66,69 +99,52 @@ def make_circle_n_points(matrix: np.ndarray) -> Circle:
             det = A * D - B * C
 
             if abs(det) < 1e-10:
-                #    # take the third point out
-                return None
-            #    raise AssertionError("Points are collinear")
+                # compute the smallest and largest x
+                max_x = p[:, 0].max()
+                min_x = p[:, 0].min()
 
-            center_x = (E * D - B * F) / det
-            center_y = (A * F - E * C) / det
+                max_y = p[:, 1].max()
+                min_y = p[:, 1].min()
 
-        center = np.array([center_x, center_y])
+                center_x = (max_x + min_x) / 2
+                center_y = (max_y + min_y) / 2
 
-        # Calculate radius using the distance from the center to any vertex (e.g., p1)
-        radius = np.linalg.norm(p1 - center)
+            else:
+                center_x = (E * D - B * F) / det
+                center_y = (A * F - E * C) / det
 
-        return Circle(center, radius)
+        center = Point(x=center_x, y=center_y)
+        radius = np.linalg.norm(p - center.array, axis=1).max()
 
-        # return make_circle_three_points(matrix[0], matrix[1], matrix[2])
+        return Circle(center=center, radius=radius)
 
 
-def minimum_circle_with_points(
-    points: List[np.ndarray], R: List[np.ndarray], shuffle: bool = True
-) -> Circle:
-    """
-    Find the minimum enclosing circle for points with points R on the boundary.
+def welzl_helper(points: List[Point], R: List[Point], n: int) -> Circle:
+    """Recursive helper function for Welzl's algorithm."""
+    if n == 0 or len(R) == 3:
+        return make_circle_n_points(R)
 
-    Args:
-        points: List of points to process
-        R: List of points known to be on the boundary
-        shuffle: Whether to shuffle the points (should be True only for initial call)
-    """
-    # Base case: If 3 boundary points are available, return a circle
-    # if len(R) == 3:
-    #    circle = make_circle_n_points(np.array(R[0], R[1], R[2]))
-    #    if circle is None:
-    #        # If the points are collinear, fall back to using two points
-    #        return make_circle_n_points(np.array(R[0], R[1]))
-    #    return circle
+    # Remove a random point
+    idx = random.randrange(n)
+    p = points[idx]
+    points[idx], points[n - 1] = points[n - 1], points[idx]
 
-    # Base case: If no points are left, return the smallest circle possible
-    # if len(points) == 0:
-    #    if len(R) == 0:
-    #        return None
-    #    elif len(R) == 1:
-    #        return make_circle_n_points(np.array(R))
-    # else:  # len(R) == 2
-    #    return make_circle_n_points(np.array(R[0], R[1]))
+    # Recursively compute the minimum circle without p
+    circle = welzl_helper(points, R, n - 1)
 
-    if len(R) <= 3:
-        return make_circle_n_points(np.array(R))
+    # If p is inside the circle, we're done
+    if circle.contains(p):
+        return circle
 
-    # Take the last point (no need to shuffle again)
-    p = points.pop()
-
-    # Recursively compute minimum circle without p
-    circle = minimum_circle_with_points(points, R, shuffle=False)
-
-    # If p is not in the circle, it must be on the boundary
-    if circle is None or not circle.contains(p):
-        R.append(p)
-        circle = minimum_circle_with_points(points, R, shuffle=False)
+    # Otherwise, p must be on the boundary of the minimum enclosing circle
+    R.append(p)
+    circle = welzl_helper(points, R, n - 1)
+    R.pop()
 
     return circle
 
 
-def welzl_min_circle(points: List[np.ndarray], seed: Optional[int] = None) -> Circle:
+def welzl_min_circle(points: List[Point]) -> Circle:
     """
     Find the minimum enclosing circle using Welzl's algorithm.
 
@@ -139,8 +155,11 @@ def welzl_min_circle(points: List[np.ndarray], seed: Optional[int] = None) -> Ci
     Returns:
         Circle object containing center coordinates and radius
     """
-    # Ensure consistent randomization by setting a fixed seed
-    if seed is not None:
-        random.seed(seed)
+    # Make a copy of points to avoid modifying the input
+    points = points.copy()
+    # Shuffle the points randomly
+    random.shuffle(points)
 
-    return minimum_circle_with_points(points, [], shuffle=True)
+    return welzl_helper(points, [], len(points))
+
+    # return minimum_circle_with_points(points, [], shuffle=True)
