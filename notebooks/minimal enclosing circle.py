@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.10.9"
+__generated_with = "0.10.12"
 app = marimo.App(width="medium")
 
 
@@ -41,7 +41,8 @@ def _():
 
 @app.cell
 def _(np):
-    pos = np.random.randn(1000, 11)
+    # generate random points in space
+    pos = np.random.randn(1000, 3)
     return (pos,)
 
 
@@ -100,7 +101,7 @@ def _(np):
 
     def min_circle_cvx(points, fct=None, **kwargs):
         # Use con_1 if no constraint construction is defined
-        fct = fct or con_1
+        fct = fct or con_3
         # cvxpy variable for the radius
         r = cp.Variable(1, name="Radius")
         # cvxpy variable for the midpoint
@@ -119,12 +120,13 @@ def _(np):
 
 @app.cell
 def _(con_3, min_circle_cvx, pos):
-    min_circle_cvx(points=pos, fct=con_3, solver="MOSEK")
+    min_circle_cvx(points=pos, fct=con_3, solver="CLARABEL")
     return
 
 
 @app.cell
 def _(min_circle_cvx, pos):
+    # You don't need to explicitly state which version of the dependencies is used.
     min_circle_cvx(points=pos, solver="CLARABEL")
     return
 
@@ -142,15 +144,25 @@ def _():
     def min_circle_mosek(points, **kwargs):
         with mf.Model() as M:
             r = M.variable("Radius", 1)
-            x = M.variable("Midpoint", points.shape[1])
+            x = M.variable("Midpoint", [1, points.shape[1]])
 
+            k = points.shape[0]
+
+            # repeat the quantities
+            R0 = mf.Var.repeat(r, k)
+            X0 = mf.Var.repeat(x, k)
+
+            # https://github.com/MOSEK/Tutorials/blob/master/minimum-ellipsoid/minimum-ellipsoid.ipynb
+            M.constraint(mf.Expr.hstack(R0, X0 - points), mf.Domain.inQCone())
+
+            # the slow version would be ...
             # see https://docs.mosek.com/latest/pythonfusion/modeling.html#vectorization
-            for i, p in enumerate(points):
-                M.constraint(
-                    f"point_{i}",
-                    mf.Expr.vstack(r, mf.Expr.sub(x, p)),
-                    mf.Domain.inQCone(),
-                )
+            # for i, p in enumerate(points):
+            #    M.constraint(
+            #        f"point_{i}",
+            #        mf.Expr.vstack(r, mf.Expr.sub(x, p)),
+            #        mf.Domain.inQCone(),
+            #    )
 
             M.objective("obj", mf.ObjectiveSense.Minimize, r)
             M.solve()
