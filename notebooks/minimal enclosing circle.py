@@ -153,7 +153,9 @@ def _():
             X0 = mf.Var.repeat(x, k)
 
             # https://github.com/MOSEK/Tutorials/blob/master/minimum-ellipsoid/minimum-ellipsoid.ipynb
-            M.constraint(mf.Expr.hstack(R0, X0 - points), mf.Domain.inQCone())
+            M.constraint(
+                mf.Expr.hstack(R0, mf.Expr.sub(X0, points)), mf.Domain.inQCone()
+            )
 
             # the slow version would be ...
             # see https://docs.mosek.com/latest/pythonfusion/modeling.html#vectorization
