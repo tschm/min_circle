@@ -44,7 +44,7 @@ def _():
 @app.cell
 def _(np):
     # generate random points in space
-    pos = np.random.randn(1000, 3)
+    pos = np.random.randn(1000, 2)
     return (pos,)
 
 
@@ -236,6 +236,33 @@ def _(np):
 @app.cell
 def _(min_circle_hexaly, pos):
     min_circle_hexaly(points=pos)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md("""## Compute using Welzl's algorithm""")
+    return
+
+
+@app.cell
+def _(mosek, pos, stats, tt):
+    from solver.welzl import welzl_min_circle
+
+    print(welzl_min_circle(points=list(pos)))
+
+    def welzl():
+        welzl_min_circle(points=list(pos))
+
+    # Run each 1000 times
+    times_welzl = tt.repeat(mosek, number=1, repeat=50)
+
+    print(f"Implementation average: {stats.mean(times_welzl):.6f} seconds")
+    return times_welzl, welzl, welzl_min_circle
+
+
+@app.cell
+def _():
     return
 
 
