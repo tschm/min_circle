@@ -28,5 +28,5 @@ jobs:
         run: |
           # Create venv
           uv venv
-          uv pip install copier pytest
+          uv pip install -r requirements.txt
           uv run pytest tests
