@@ -35,8 +35,10 @@ def _(mo):
 def _():
     import plotly.graph_objects as go
     import numpy as np
+    import timeit as tt
+    import statistics as stats
 
-    return go, np
+    return go, np, stats, tt
 
 
 @app.cell
@@ -119,16 +121,23 @@ def _(np):
 
 
 @app.cell
-def _(con_3, min_circle_cvx, pos):
-    min_circle_cvx(points=pos, fct=con_3, solver="CLARABEL")
-    return
+def _(min_circle_cvx, np, pos, stats, tt):
+    print(min_circle_cvx(points=pos, solver="CLARABEL"))
+    print(min_circle_cvx(points=pos, solver="MOSEK"))
 
+    def cvx1():
+        min_circle_cvx(points=np.random.randn(1000, 3), solver="CLARABEL")
 
-@app.cell
-def _(min_circle_cvx, pos):
-    # You don't need to explicitly state which version of the dependencies is used.
-    min_circle_cvx(points=pos, solver="CLARABEL")
-    return
+    def cvx2():
+        min_circle_cvx(points=np.random.randn(1000, 3), solver="MOSEK")
+
+    # Run each 1000 times
+    times_clarabel = tt.repeat(cvx1, number=1, repeat=50)
+    times_cvx_mosek = tt.repeat(cvx2, number=1, repeat=50)
+
+    print(f"Implementation cvxpy/clarabel: {stats.mean(times_clarabel):.6f} seconds")
+    print(f"Implementation cvxpy/mosek: {stats.mean(times_cvx_mosek):.6f} seconds")
+    return cvx1, cvx2, times_clarabel, times_cvx_mosek
 
 
 @app.cell
@@ -174,9 +183,17 @@ def _():
 
 
 @app.cell
-def _(min_circle_mosek, pos):
-    min_circle_mosek(points=pos)
-    return
+def _(min_circle_mosek, np, pos, stats, tt):
+    print(min_circle_mosek(points=pos))
+
+    def mosek():
+        min_circle_mosek(points=np.random.randn(1000, 3))
+
+    # Run each 1000 times
+    times_mosek = tt.repeat(mosek, number=1, repeat=50)
+
+    print(f"Implementation average: {stats.mean(times_mosek):.6f} seconds")
+    return mosek, times_mosek
 
 
 @app.cell
@@ -219,12 +236,6 @@ def _(np):
 @app.cell
 def _(min_circle_hexaly, pos):
     min_circle_hexaly(points=pos)
-    return
-
-
-@app.cell
-def _(mo):
-    mo.md("""## Compute with scikit-learn""")
     return
 
 
