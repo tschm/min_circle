@@ -13,7 +13,7 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(
-        """We compute the radius and center of the smallest enclosing ball for $N$ points in $d$ dimensions. We use a variety of tools and compare their performance."""
+        """We compute the radius and center of the smallest enclosing ball for $N$ points in $d$ dimensions. We use a variety of tools and compare their performance. For fun we included the recursive algorithm by Emo Welzl. Hence we work with $d=2$."""
     )
     return
 
@@ -44,7 +44,7 @@ def _():
 @app.cell
 def _(np):
     # generate random points in space
-    pos = np.random.randn(1000, 3)
+    pos = np.random.randn(2600, 2)
     return (pos,)
 
 
@@ -121,15 +121,15 @@ def _(np):
 
 
 @app.cell
-def _(min_circle_cvx, np, pos, stats, tt):
+def _(min_circle_cvx, pos, stats, tt):
     print(min_circle_cvx(points=pos, solver="CLARABEL"))
     print(min_circle_cvx(points=pos, solver="MOSEK"))
 
     def cvx1():
-        min_circle_cvx(points=np.random.randn(1000, 3), solver="CLARABEL")
+        min_circle_cvx(points=pos, solver="CLARABEL")
 
     def cvx2():
-        min_circle_cvx(points=np.random.randn(1000, 3), solver="MOSEK")
+        min_circle_cvx(points=pos, solver="MOSEK")
 
     # Run each 1000 times
     times_clarabel = tt.repeat(cvx1, number=1, repeat=50)
@@ -166,15 +166,6 @@ def _():
                 mf.Expr.hstack(R0, mf.Expr.sub(X0, points)), mf.Domain.inQCone()
             )
 
-            # the slow version would be ...
-            # see https://docs.mosek.com/latest/pythonfusion/modeling.html#vectorization
-            # for i, p in enumerate(points):
-            #    M.constraint(
-            #        f"point_{i}",
-            #        mf.Expr.vstack(r, mf.Expr.sub(x, p)),
-            #        mf.Domain.inQCone(),
-            #    )
-
             M.objective("obj", mf.ObjectiveSense.Minimize, r)
             M.solve()
             return {"Radius": r.level(), "Midpoint": x.level()}
@@ -183,11 +174,11 @@ def _():
 
 
 @app.cell
-def _(min_circle_mosek, np, pos, stats, tt):
+def _(min_circle_mosek, pos, stats, tt):
     print(min_circle_mosek(points=pos))
 
     def mosek():
-        min_circle_mosek(points=np.random.randn(1000, 3))
+        min_circle_mosek(pos)
 
     # Run each 1000 times
     times_mosek = tt.repeat(mosek, number=1, repeat=50)
@@ -228,7 +219,11 @@ def _(np):
             model.close()
 
             optimizer.solve()
-            return {"Radius": r.value, "Midpoint": z[0].value}
+            return {
+                "Radius": r.value,
+                "Midpoint x": z[0].value,
+                "Midpoint y": z[1].value,
+            }
 
     return hexaly, min_circle_hexaly
 
@@ -236,6 +231,37 @@ def _(np):
 @app.cell
 def _(min_circle_hexaly, pos):
     min_circle_hexaly(points=pos)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md("""## Compute using Welzl's algorithm""")
+    return
+
+
+@app.cell
+def _(mosek, pos, stats, tt):
+    from solver.welzl import welzl_min_circle
+    from solver.welzl import Point
+
+    # we perform a conversion to points
+    points = [Point(x=a[0], y=a[1]) for a in pos]
+
+    print(welzl_min_circle(points=points))
+
+    def welzl():
+        welzl_min_circle(points=points)
+
+    # Run each 50 times
+    times_welzl = tt.repeat(mosek, number=1, repeat=50)
+
+    print(f"Implementation average: {stats.mean(times_welzl):.6f} seconds")
+    return Point, points, times_welzl, welzl, welzl_min_circle
+
+
+@app.cell
+def _():
     return
 
 

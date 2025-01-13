@@ -2,7 +2,7 @@
 
 venv:
 	@curl -LsSf https://astral.sh/uv/install.sh | sh
-	@uv venv
+	@uv venv --python '3.12'
 
 
 .PHONY: install
@@ -34,3 +34,8 @@ help:  ## Display this help screen
 marimo: install ## Install Marimo
 	@uv pip install marimo
 	@uv run marimo edit notebooks
+
+.PHONY: test
+test: install  ## Run pytests
+	@uv pip install pytest
+	@uv run pytest tests
