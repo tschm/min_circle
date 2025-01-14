@@ -33,12 +33,24 @@ def _(mo):
 
 @app.cell
 def _():
-    import plotly.graph_objects as go
     import numpy as np
     import timeit as tt
     import statistics as stats
 
-    return go, np, stats, tt
+    from solver.cvx import min_circle_cvx
+    from solver.hexaly import min_circle_hexaly
+    from solver.mosek import min_circle_mosek
+    from solver.welzl import min_circle_welzl
+
+    return (
+        min_circle_cvx,
+        min_circle_hexaly,
+        min_circle_mosek,
+        min_circle_welzl,
+        np,
+        stats,
+        tt,
+    )
 
 
 @app.cell
@@ -49,29 +61,23 @@ def _(np):
 
 
 @app.cell
-def _(go, pos):
-    # Create the scatter plot
-    fig = go.Figure(
-        data=go.Scatter(
-            x=pos[:, 0], y=pos[:, 1], mode="markers", marker=dict(symbol="x", size=10)
-        )
-    )
+def _():
+    # Create the figure
+    from solver.utils.figure import create_figure
 
-    # Update layout for equal aspect ratio and axis labels
-    fig.update_layout(
-        xaxis_title="x",
-        yaxis_title="y",
-        yaxis=dict(
-            scaleanchor="x",
-            scaleratio=1,
-        ),
-    )
+    fig = create_figure()
+    return create_figure, fig
 
-    # Show the plot
-    fig.show()
 
-    # plot makes really only sense when using d=2
-    return (fig,)
+@app.cell
+def _(fig, pos):
+    # add the cloud plot
+    from solver.utils.cloud import Cloud
+
+    cloud = Cloud(points=pos)
+
+    fig.add_trace(cloud.scatter())
+    return Cloud, cloud
 
 
 @app.cell
@@ -81,49 +87,14 @@ def _(mo):
 
 
 @app.cell
-def _(np):
-    import cvxpy as cp
+def _(fig, pos, stats, tt):
+    from solver.cvx import min_circle_cvx
 
-    # We compare 3 equivalent ways to create the constraint that
-    # each point has to be within the ball of radius r centered at x
-    def con_1(points, x, r):
-        return [cp.norm(point - x) <= r for point in points]
-
-    def con_2(points, x, r):
-        return [cp.SOC(r, point - x) for point in points]
-
-    def con_3(points, x, r):
-        return [
-            cp.SOC(
-                r * np.ones(points.shape[0]),
-                points - cp.outer(np.ones(points.shape[0]), x),
-                axis=1,
-            )
-        ]
-
-    def min_circle_cvx(points, fct=None, **kwargs):
-        # Use con_1 if no constraint construction is defined
-        fct = fct or con_3
-        # cvxpy variable for the radius
-        r = cp.Variable(1, name="Radius")
-        # cvxpy variable for the midpoint
-        x = cp.Variable(points.shape[1], name="Midpoint")
-
-        objective = cp.Minimize(r)
-        constraints = fct(points, x, r)
-
-        problem = cp.Problem(objective=objective, constraints=constraints)
-        problem.solve(**kwargs)
-
-        return {"Radius": r.value, "Midpoint": x.value}
-
-    return con_1, con_2, con_3, cp, min_circle_cvx
-
-
-@app.cell
-def _(min_circle_cvx, pos, stats, tt):
     print(min_circle_cvx(points=pos, solver="CLARABEL"))
     print(min_circle_cvx(points=pos, solver="MOSEK"))
+    circle = min_circle_cvx(points=pos, solver="CLARABEL")
+    fig.add_trace(circle.scatter())
+    fig.show()
 
     def cvx1():
         min_circle_cvx(points=pos, solver="CLARABEL")
@@ -137,7 +108,14 @@ def _(min_circle_cvx, pos, stats, tt):
 
     print(f"Implementation cvxpy/clarabel: {stats.mean(times_clarabel):.6f} seconds")
     print(f"Implementation cvxpy/mosek: {stats.mean(times_cvx_mosek):.6f} seconds")
-    return cvx1, cvx2, times_clarabel, times_cvx_mosek
+    return (
+        circle,
+        cvx1,
+        cvx2,
+        min_circle_cvx,
+        times_clarabel,
+        times_cvx_mosek,
+    )
 
 
 @app.cell
@@ -148,29 +126,9 @@ def _(mo):
 
 @app.cell
 def _():
-    import mosek.fusion as mf
+    from solver.mosek import min_circle_mosek
 
-    def min_circle_mosek(points, **kwargs):
-        with mf.Model() as M:
-            r = M.variable("Radius", 1)
-            x = M.variable("Midpoint", [1, points.shape[1]])
-
-            k = points.shape[0]
-
-            # repeat the quantities
-            R0 = mf.Var.repeat(r, k)
-            X0 = mf.Var.repeat(x, k)
-
-            # https://github.com/MOSEK/Tutorials/blob/master/minimum-ellipsoid/minimum-ellipsoid.ipynb
-            M.constraint(
-                mf.Expr.hstack(R0, mf.Expr.sub(X0, points)), mf.Domain.inQCone()
-            )
-
-            M.objective("obj", mf.ObjectiveSense.Minimize, r)
-            M.solve()
-            return {"Radius": r.level(), "Midpoint": x.level()}
-
-    return mf, min_circle_mosek
+    return (min_circle_mosek,)
 
 
 @app.cell
@@ -194,44 +152,11 @@ def _(mo):
 
 
 @app.cell
-def _(np):
-    import hexaly.optimizer
+def _(pos):
+    from solver.hexaly import min_circle_hexaly
 
-    def min_circle_hexaly(points, **kwargs):
-        with hexaly.optimizer.HexalyOptimizer() as optimizer:
-            #
-            # Declare the optimization model
-            #
-            model = optimizer.model
-
-            z = np.array(
-                [
-                    model.float(np.min(points[:, j]), np.max(points[:, j]))
-                    for j in range(points.shape[1])
-                ]
-            )
-
-            radius = [np.sum((z - point) ** 2) for point in points]
-
-            # Minimize the radius r
-            r = model.sqrt(model.max(radius))
-            model.minimize(r)
-            model.close()
-
-            optimizer.solve()
-            return {
-                "Radius": r.value,
-                "Midpoint x": z[0].value,
-                "Midpoint y": z[1].value,
-            }
-
-    return hexaly, min_circle_hexaly
-
-
-@app.cell
-def _(min_circle_hexaly, pos):
     min_circle_hexaly(points=pos)
-    return
+    return (min_circle_hexaly,)
 
 
 @app.cell
@@ -242,23 +167,18 @@ def _(mo):
 
 @app.cell
 def _(pos, stats, tt):
-    from solver.welzl import welzl_min_circle
+    from solver.welzl import min_circle_welzl
 
-    print(welzl_min_circle(points=list(pos)))
+    print(min_circle_welzl(points=pos))
 
     def welzl():
-        welzl_min_circle(points=list(pos))
+        min_circle_welzl(points=pos)
 
     # Run each 50 times
     times_welzl = tt.repeat(welzl, number=1, repeat=100)
 
     print(f"Implementation average: {stats.mean(times_welzl):.6f} seconds")
-    return times_welzl, welzl, welzl_min_circle
-
-
-@app.cell
-def _():
-    return
+    return times_welzl, welzl, min_circle_welzl
 
 
 if __name__ == "__main__":

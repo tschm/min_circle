@@ -1,17 +1,9 @@
-from dataclasses import dataclass
 import random
 import numpy as np
 from typing import List
 
 
-@dataclass(frozen=True)
-class Circle:
-    center: np.ndarray
-    radius: float
-
-    def contains(self, point: np.ndarray, tolerance: float = 1e-10) -> bool:
-        """Check if a point lies within or on the circle."""
-        return np.linalg.norm(point - self.center) <= self.radius + tolerance
+from .utils.circle import Circle
 
 
 # Calculate slopes of perpendicular bisectors
@@ -117,7 +109,7 @@ def welzl_helper(points: List[np.ndarray], R: List[np.ndarray], n: int) -> Circl
     return circle
 
 
-def welzl_min_circle(points: List[np.ndarray]) -> Circle:
+def min_circle_welzl(points: np.ndarray) -> Circle:
     """
     Find the minimum enclosing circle using Welzl's algorithm.
 
@@ -127,6 +119,9 @@ def welzl_min_circle(points: List[np.ndarray]) -> Circle:
     Returns:
         Circle object containing center coordinates and radius
     """
+    if isinstance(points, np.ndarray):
+        points = list(points)
+
     # Make a copy of points to avoid modifying the input
     points = points.copy()
     # Shuffle the points randomly
