@@ -4,6 +4,7 @@ from typing import List
 
 
 from .utils.circle import Circle
+from .cvx import min_circle_cvx
 
 
 # Calculate slopes of perpendicular bisectors
@@ -25,63 +26,66 @@ def make_circle_n_points(matrix: List[np.ndarray]) -> Circle:
     if num_points == 1:
         return Circle(matrix[0], 0)  # Single point, radius 0
 
-    if num_points == 2:
-        # Two points: the center is the midpoint, radius is half the distance
-        center = (matrix[0] + matrix[1]) / 2
-        radius = np.linalg.norm(matrix[0] - matrix[1]) / 2
+    if num_points == 2 or num_points == 3:
+        return min_circle_cvx(np.array(matrix), solver="CLARABEL")
 
-        return Circle(center=center, radius=radius)
+    # if num_points == 2:
+    #    # Two points: the center is the midpoint, radius is half the distance
+    #    center = (matrix[0] + matrix[1]) / 2
+    #    radius = np.linalg.norm(matrix[0] - matrix[1]) / 2
+    #
+    #    return Circle(center=center, radius=radius)
 
-    if num_points == 3:
-        # For 3 points: use the circumcenter and circumradius formula
-        # p1, p2, p3 = matrix
-        p = np.array(matrix)
+    # if num_points == 3:
+    #    # For 3 points: use the circumcenter and circumradius formula
+    #    # p1, p2, p3 = matrix
+    #    p = np.array(matrix)
+    #
+    #    # Midpoints of the sides
+    #    mid12 = (p[0] + p[1]) * 0.5
+    #    mid23 = (p[1] + p[2]) * 0.5
+    #
+    #    # Slopes of the perpendicular bisectors
+    #    # Perpendicular slope to line 1-2: m1
+    #    m1 = perpendicular_slope(p[1], p[0])
+    #
+    #    # Perpendicular slope to line 2-3: m2
+    #    m2 = perpendicular_slope(p[1], p[2])
+    #
+    #    # Use line equations to solve for the intersection (circumcenter)
+    #    if m1 == np.inf:  # Line 1-2 is vertical, so we solve for x = mid12[0]
+    #        center_x = mid12[0]
+    #        center_y = m2 * (center_x - mid23[0]) + mid23[1]
+    #    elif m2 == np.inf:  # Line 2-3 is vertical, so we solve for x = mid23[0]
+    #        center_x = mid23[0]
+    #        center_y = m1 * (center_x - mid12[0]) + mid12[1]
+    #    else:
+    #        # Calculate the intersection of the two perpendicular bisectors
+    #        A, B = m1, -1
+    #        C, D = m2, -1
+    #        E = m1 * mid12[0] - mid12[1]
+    #        F = m2 * mid23[0] - mid23[1]
+    #
+    #        # Construct the coefficient matrix and the right-hand side vector
+    #        coeff_matrix = np.array([[A, B], [C, D]])
+    #        rhs = np.array([E, F])
 
-        # Midpoints of the sides
-        mid12 = (p[0] + p[1]) * 0.5
-        mid23 = (p[1] + p[2]) * 0.5
+    #        try:
+    #            center_x, center_y = np.linalg.solve(coeff_matrix, rhs)
+    #        except np.linalg.LinAlgError:
+    #            max_x = p[:, 0].max()
+    #            min_x = p[:, 0].min()
+    #
+    #            max_y = p[:, 1].max()
+    #            min_y = p[:, 1].min()
 
-        # Slopes of the perpendicular bisectors
-        # Perpendicular slope to line 1-2: m1
-        m1 = perpendicular_slope(p[1], p[0])
+    #            center_x = (max_x + min_x) / 2
+    #            center_y = (max_y + min_y) / 2
 
-        # Perpendicular slope to line 2-3: m2
-        m2 = perpendicular_slope(p[1], p[2])
+    #    center = np.array([center_x, center_y])
+    #    radius = np.linalg.norm(p - center, axis=1).max()
 
-        # Use line equations to solve for the intersection (circumcenter)
-        if m1 == np.inf:  # Line 1-2 is vertical, so we solve for x = mid12[0]
-            center_x = mid12[0]
-            center_y = m2 * (center_x - mid23[0]) + mid23[1]
-        elif m2 == np.inf:  # Line 2-3 is vertical, so we solve for x = mid23[0]
-            center_x = mid23[0]
-            center_y = m1 * (center_x - mid12[0]) + mid12[1]
-        else:
-            # Calculate the intersection of the two perpendicular bisectors
-            A, B = m1, -1
-            C, D = m2, -1
-            E = m1 * mid12[0] - mid12[1]
-            F = m2 * mid23[0] - mid23[1]
-
-            # Construct the coefficient matrix and the right-hand side vector
-            coeff_matrix = np.array([[A, B], [C, D]])
-            rhs = np.array([E, F])
-
-            try:
-                center_x, center_y = np.linalg.solve(coeff_matrix, rhs)
-            except np.linalg.LinAlgError:
-                max_x = p[:, 0].max()
-                min_x = p[:, 0].min()
-
-                max_y = p[:, 1].max()
-                min_y = p[:, 1].min()
-
-                center_x = (max_x + min_x) / 2
-                center_y = (max_y + min_y) / 2
-
-        center = np.array([center_x, center_y])
-        radius = np.linalg.norm(p - center, axis=1).max()
-
-        return Circle(center=center, radius=radius)
+    #    return Circle(center=center, radius=radius)
 
 
 def welzl_helper(points: List[np.ndarray], R: List[np.ndarray], n: int) -> Circle:
@@ -89,19 +93,31 @@ def welzl_helper(points: List[np.ndarray], R: List[np.ndarray], n: int) -> Circl
     if n == 0 or len(R) == 3:
         return make_circle_n_points(R)
 
-    # Remove a random point
+    # Remove a random point by shuffling it to the end
+    # we know at this stage that n > 0
     idx = random.randrange(n)
     p = points[idx]
     points[idx], points[n - 1] = points[n - 1], points[idx]
 
     # Recursively compute the minimum circle without p
+    # This is drilling down and open welzl_helper for each individual p!
+    # R remains empty for now
     circle = welzl_helper(points, R, n - 1)
+    # finally it will arrive at n == 0 and R = []
+    # It now calls make_circle_n_points with R = []
+    # It returns a circle with radius -inf
+    # and lands back here where
+    # n = 1
+    # p is the final surviving point
+    # and the circle has radius -inf
+    # obviously p is not(!) contained in the circle!
 
     # If p is inside the circle, we're done
     if circle.contains(p):
         return circle
 
     # Otherwise, p must be on the boundary of the minimum enclosing circle
+    # now we add this final point, points is still empty
     R.append(p)
     circle = welzl_helper(points, R, n - 1)
     R.pop()

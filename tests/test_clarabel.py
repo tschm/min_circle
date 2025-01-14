@@ -24,7 +24,7 @@ def test_clarabel(points):
 def test_vertical_12():
     p = np.array([np.array([0, 0]), np.array([0.0, 2.0]), np.array([4.0, 4.0])])
     cloud = Cloud(p)
-    circle = min_circle_cvx(p)
+    circle = min_circle_cvx(p, solver="CLARABEL")
 
     fig = create_figure()
     fig.add_trace(circle.scatter())
@@ -46,7 +46,7 @@ def test_vertical_12():
 def test_vertical_23():
     p = np.array([[4.0, 4.0], [0, 0], [0.0, 2.0]])
     cloud = Cloud(p)
-    circle = min_circle_cvx(p)
+    circle = min_circle_cvx(p, solver="CLARABEL")
 
     fig = create_figure()
     fig.add_trace(circle.scatter())
@@ -68,7 +68,7 @@ def test_vertical_23():
 def test_vertical():
     p = np.array([[0.0, 4.0], [0, 0], [0.0, 2.0]])
     cloud = Cloud(p)
-    circle = min_circle_cvx(p)
+    circle = min_circle_cvx(p, solver="CLARABEL")
 
     fig = create_figure()
     fig.add_trace(circle.scatter())
@@ -85,7 +85,7 @@ def test_vertical():
 def test_random():
     p = np.array([[2.0, 4.0], [0, 0], [2.5, 2.0]])
     cloud = Cloud(p)
-    circle = min_circle_cvx(p)
+    circle = min_circle_cvx(p, solver="CLARABEL")
 
     fig = create_figure()
     fig.add_trace(circle.scatter())
@@ -102,7 +102,7 @@ def test_random():
 def test_random_2():
     p = np.array([[0, 0.0], [3, 2], [6, 0.0]])
     cloud = Cloud(p)
-    circle = min_circle_cvx(p)
+    circle = min_circle_cvx(p, solver="CLARABEL")
 
     fig = create_figure()
     fig.add_trace(circle.scatter())

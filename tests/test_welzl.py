@@ -52,15 +52,15 @@ def test_collinear():
 
 def test_helper(points):
     circle = welzl_helper(points, [], 3)
-    assert circle.radius == pytest.approx(2.5, rel=1e-9)
-    assert circle.center == pytest.approx([2.0, 1.5], rel=1e-9)
+    assert circle.radius == pytest.approx(2.5, rel=1e-6)
+    assert circle.center == pytest.approx([2.0, 1.5], rel=1e-6)
 
 
 def test_welzl_min_circle(points):
     circle = min_circle_welzl(points)
 
-    assert circle.radius == pytest.approx(2.5, rel=1e-9)
-    assert circle.center == pytest.approx([2.0, 1.5], rel=1e-9)
+    assert circle.radius == pytest.approx(2.5, rel=1e-6)
+    assert circle.center == pytest.approx([2.0, 1.5], rel=1e-6)
 
 
 def test_multiple_points():
@@ -82,6 +82,19 @@ def test_vertical_12():
 
     assert circle.radius == pytest.approx(3.1622776601683795, rel=1e-9)
     assert circle.center == pytest.approx(np.array([3.0, 1.0]), rel=1e-9)
+
+
+def test_miniball():
+    from miniball import get_bounding_ball, get_circumsphere
+
+    p = np.array([[0, 0], [0.0, 2.0], [4.0, 4.0]])
+    print(p)
+
+    a = get_bounding_ball(S=p, epsilon=1e-7)
+    print(a)
+
+    a = get_circumsphere(S=p)
+    print(a)
 
 
 # def test_vertical_23():

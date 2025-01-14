@@ -26,9 +26,4 @@ def min_circle_hexaly(points, **kwargs):
         model.close()
 
         optimizer.solve()
-        # return {
-        #    "Radius": r.value,
-        #    "Midpoint x": z[0].value,
-        #    "Midpoint y": z[1].value,
-        # }
         return Circle(radius=r.value, center=np.array([z[0].value, z[1].value]))
