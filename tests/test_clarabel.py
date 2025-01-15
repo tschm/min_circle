@@ -1,37 +1,116 @@
 import numpy as np
-import cvxpy as cp
 
 import pytest
 
-
-def con_3(points, x, r):
-    return [
-        cp.SOC(
-            r * np.ones(points.shape[0]),
-            points - cp.outer(np.ones(points.shape[0]), x),
-            axis=1,
-        )
-    ]
+from notebooks.solver.cvx import min_circle_cvx
+from notebooks.solver.utils.cloud import Cloud
+from notebooks.solver.utils.figure import create_figure
+from notebooks.solver.welzl import make_circle_n_points
 
 
-def min_circle_cvx(points, **kwargs):
-    # Use con_1 if no constraint construction is defined
-    fct = con_3
-    # cvxpy variable for the radius
-    r = cp.Variable(1, name="Radius")
-    # cvxpy variable for the midpoint
-    x = cp.Variable(points.shape[1], name="Midpoint")
+def test_clarabel(points):
+    cloud = Cloud(np.array(points))
+    circle = min_circle_cvx(np.array(points), solver="CLARABEL")
+    assert circle.radius == pytest.approx(2.5)
+    assert circle.center == pytest.approx(np.array([2.0, 1.5]))
 
-    objective = cp.Minimize(r)
-    constraints = fct(points, x, r)
+    fig = create_figure()
+    fig.add_trace(circle.scatter())
+    fig.add_trace(cloud.scatter())
 
-    problem = cp.Problem(objective=objective, constraints=constraints)
-    problem.solve(**kwargs)
-
-    return {"Radius": r.value, "Midpoint": x.value}
+    fig.show()
 
 
-def test_clarabel(np_points):
-    results = min_circle_cvx(np_points, solver="CLARABEL")
-    assert results["Radius"] == pytest.approx(2.5)
-    assert results["Midpoint"] == pytest.approx(np.array([2.0, 1.5]))
+def test_vertical_12():
+    p = np.array([np.array([0, 0]), np.array([0.0, 2.0]), np.array([4.0, 4.0])])
+    cloud = Cloud(p)
+    circle = min_circle_cvx(p, solver="CLARABEL")
+
+    fig = create_figure()
+    fig.add_trace(circle.scatter())
+    fig.add_trace(cloud.scatter())
+
+    fig.show()
+
+    # assert circle.radius == pytest.approx(3.1622776601683795, rel=1e-9)
+    # assert circle.center == pytest.approx(np.array([3.0, 1.0]), rel=1e-9)
+
+    # p = [np.array([0, 0]), np.array([0.0, 2.0]), np.array([4.0, 4.0])]
+
+    circle = make_circle_n_points(list(p))
+
+    fig.add_trace(circle.scatter(color="black"))
+    fig.show()
+
+
+def test_vertical_23():
+    p = np.array([[4.0, 4.0], [0, 0], [0.0, 2.0]])
+    cloud = Cloud(p)
+    circle = min_circle_cvx(p, solver="CLARABEL")
+
+    fig = create_figure()
+    fig.add_trace(circle.scatter())
+    fig.add_trace(cloud.scatter())
+
+    fig.show()
+
+    # assert circle.radius == pytest.approx(3.1622776601683795, rel=1e-9)
+    # assert circle.center == pytest.approx(np.array([3.0, 1.0]), rel=1e-9)
+
+    # p = [np.array([0, 0]), np.array([0.0, 2.0]), np.array([4.0, 4.0])]
+
+    circle = make_circle_n_points(list(p))
+
+    fig.add_trace(circle.scatter(color="black"))
+    fig.show()
+
+
+def test_vertical():
+    p = np.array([[0.0, 4.0], [0, 0], [0.0, 2.0]])
+    cloud = Cloud(p)
+    circle = min_circle_cvx(p, solver="CLARABEL")
+
+    fig = create_figure()
+    fig.add_trace(circle.scatter())
+    fig.add_trace(cloud.scatter())
+
+    fig.show()
+
+    circle = make_circle_n_points(list(p))
+
+    fig.add_trace(circle.scatter(color="black"))
+    fig.show()
+
+
+def test_random():
+    p = np.array([[2.0, 4.0], [0, 0], [2.5, 2.0]])
+    cloud = Cloud(p)
+    circle = min_circle_cvx(p, solver="CLARABEL")
+
+    fig = create_figure()
+    fig.add_trace(circle.scatter())
+    fig.add_trace(cloud.scatter())
+
+    fig.show()
+
+    circle = make_circle_n_points(list(p))
+
+    fig.add_trace(circle.scatter(color="black"))
+    fig.show()
+
+
+def test_random_2():
+    p = np.array([[0, 0.0], [3, 2], [6, 0.0]])
+    cloud = Cloud(p)
+    circle = min_circle_cvx(p, solver="CLARABEL")
+
+    fig = create_figure()
+    fig.add_trace(circle.scatter())
+    fig.add_trace(cloud.scatter())
+
+    fig.show()
+
+    circle = make_circle_n_points(list(p))
+
+    fig.add_trace(circle.scatter(color="black"))
+    fig.show()
