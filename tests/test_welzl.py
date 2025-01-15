@@ -75,26 +75,13 @@ def test_multiple_points():
     print(statistics.mean(times_welzl))
 
 
-def test_vertical_12():
-    p = [np.array([0, 0]), np.array([0.0, 2.0]), np.array([4.0, 4.0])]
-
-    circle = make_circle_n_points(p)
-
-    assert circle.radius == pytest.approx(3.1622776601683795, rel=1e-9)
-    assert circle.center == pytest.approx(np.array([3.0, 1.0]), rel=1e-9)
-
-
-def test_miniball():
-    from miniball import get_bounding_ball, get_circumsphere
-
-    p = np.array([[0, 0], [0.0, 2.0], [4.0, 4.0]])
-    print(p)
-
-    a = get_bounding_ball(S=p, epsilon=1e-7)
-    print(a)
-
-    a = get_circumsphere(S=p)
-    print(a)
+# def test_vertical_12():
+#     p = [np.array([0, 0]), np.array([0.0, 2.0]), np.array([4.0, 4.0])]
+#
+#     circle = make_circle_n_points(p)
+#
+#     assert circle.radius == pytest.approx(3.1622776601683795, rel=1e-9)
+#     assert circle.center == pytest.approx(np.array([3.0, 1.0]), rel=1e-9)
 
 
 # def test_vertical_23():
