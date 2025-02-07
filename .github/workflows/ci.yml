@@ -10,23 +10,16 @@ jobs:
 
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
         python-version: [ '3.10', '3.11', '3.12', '3.13' ]
 
-      # Steps represent a sequence of tasks that will be executed as part of the job
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Checkout [${{ github.repository }}]
-        uses: actions/checkout@v4
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
+      - name: "Build the virtual environment for ${{ github.repository }}"
+        uses: cvxgrp/.github/actions/environment@v2.2.3
         with:
-          python-version: ${{ inputs.python-version }}
+          python-version: ${{ matrix.python-version }}
 
-      - name: Set up Python environment with uv
-        shell: bash
-        run: |
-          # Create venv
-          uv venv --python=${{ inputs.python-version }}
-          uv pip install -r requirements.txt
-          uv run pytest tests
+      - uses: cvxgrp/.github/actions/test@v2.2.3
+        with:
+          tests-folder: tests
