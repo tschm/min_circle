@@ -1,6 +1,6 @@
 --extra-index-url https://pip.hexaly.com
 
-cvxpy-base==1.6.1
+cvxpy-base==1.6.2
 numpy
 scipy==1.15.2
 plotly==6.0.0
