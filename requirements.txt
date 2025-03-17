@@ -3,7 +3,7 @@
 cvxpy-base==1.6.4
 numpy
 scipy==1.15.2
-plotly==6.0.0
+plotly==6.0.1
 
 # we also install them on the fly in the Makefile
 marimo==0.11.20
