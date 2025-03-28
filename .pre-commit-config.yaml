@@ -7,7 +7,7 @@ repos:
       - id: check-yaml
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 'v0.11.1'
+    rev: 'v0.11.2'
     hooks:
       - id: ruff
         args: [ --fix, --exit-non-zero-on-fix ]
@@ -25,12 +25,12 @@ repos:
       - id: pyupgrade
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.31.3
+    rev: 0.32.1
     hooks:
       - id: check-renovate
         args: [ "--verbose" ]
 
   - repo: https://github.com/crate-ci/typos
-    rev: v1.30.2
+    rev: v1.31.0
     hooks:
       - id: typos
