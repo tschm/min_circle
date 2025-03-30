@@ -8,6 +8,6 @@
     ":semanticCommits",
     ":pinVersions"
   ],
-  "enabledManagers": ["pip", "pre-commit", "github-actions"],
+  "enabledManagers": ["pip_requirements", "pre-commit", "github-actions"],
   "timezone": "Asia/Dubai"
 }
