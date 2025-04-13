@@ -1,10 +1,10 @@
-import random
 import numpy as np
 from typing import List
 
 
 from .utils.circle import Circle
 from .cvx import min_circle_cvx
+import secrets
 
 
 # Calculate slopes of perpendicular bisectors
@@ -95,7 +95,7 @@ def welzl_helper(points: List[np.ndarray], R: List[np.ndarray], n: int) -> Circl
 
     # Remove a random point by shuffling it to the end
     # we know at this stage that n > 0
-    idx = random.randrange(n)
+    idx = secrets.SystemRandom().randrange(n)
     p = points[idx]
     points[idx], points[n - 1] = points[n - 1], points[idx]
 
@@ -141,6 +141,6 @@ def min_circle_welzl(points: np.ndarray) -> Circle:
     # Make a copy of points to avoid modifying the input
     points = points.copy()
     # Shuffle the points randomly
-    random.shuffle(points)
+    secrets.SystemRandom().shuffle(points)
 
     return welzl_helper(points, [], len(points))
