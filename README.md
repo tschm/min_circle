@@ -1,5 +1,7 @@
 # Compute the minimal enclosing circle
 
+[![CodeFactor](https://www.codefactor.io/repository/github/tschm/min_circle/badge)](https://www.codefactor.io/repository/github/tschm/min_circle)
+
 We use different solvers and compare readability and speed.
 
 ## The problem
