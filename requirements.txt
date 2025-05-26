@@ -6,7 +6,7 @@ scipy==1.15.3
 plotly==6.1.0
 
 # we also install them on the fly in the Makefile
-marimo==0.13.10
+marimo==0.13.11
 pre-commit==4.2.0
 
 # Install solvers
