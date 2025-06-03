@@ -15,5 +15,5 @@ mosek==11.0.21
 hexaly
 
 # for testing
-pytest==8.3.5
+pytest==8.4.0
 pytest-cov==6.1.1
