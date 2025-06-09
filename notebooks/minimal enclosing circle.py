@@ -118,18 +118,19 @@ def _():
     return
 
 
-@app.cell
-def _welzl(pos):
-    print(min_circle_welzl(points=pos))
 
-    def welzl():
-        min_circle_welzl(points=pos)
+#@app.cell
+#def _welzl(pos):
+#    print(min_circle_welzl(points=pos))
+#
+#    def welzl():
+#        min_circle_welzl(points=pos)
 
-    # Run each 50 times
-    times_welzl = tt.repeat(welzl, number=1, repeat=100)
-
-    print(f"Implementation average: {stats.mean(times_welzl):.6f} seconds")
-    return
+#    # Run each 50 times
+#    times_welzl = tt.repeat(welzl, number=1, repeat=100)
+#
+#    print(f"Implementation average: {stats.mean(times_welzl):.6f} seconds")
+#    return
 
 
 if __name__ == "__main__":
