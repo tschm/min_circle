@@ -16,22 +16,21 @@ venv:
 
 install: venv ## Install all dependencies using uv
 	@printf "$(BLUE)Installing dependencies...$(RESET)\n"
-	@uv sync --dev --frozen
+	@uv pip install --no-cache-dir -r requirements.txt
 
 ##@ Code Quality
 
 fmt: venv ## Run code formatting and linting
 	@printf "$(BLUE)Running formatters and linters...$(RESET)\n"
-	@uv pip install pre-commit
-	@uv run pre-commit install
-	@uv run pre-commit run --all-files
+	@uvx pre-commit install
+	@uvx pre-commit run --all-files
 
 ##@ Testing
 
 test: install ## Run all tests
 	@printf "$(BLUE)Running tests...$(RESET)\n"
 	@uv pip install pytest
-	@uv run pytest src/tests
+	@uv run pytest tests
 
 ##@ Cleanup
 

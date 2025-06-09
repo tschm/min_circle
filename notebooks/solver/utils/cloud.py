@@ -13,5 +13,5 @@ class Cloud:
             x=self.points[:, 0],
             y=self.points[:, 1],
             mode="markers",
-            marker=dict(symbol="x", size=size, color="blue"),
+            marker={"symbol": "x", "size": size, "color": "blue"},
         )

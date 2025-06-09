@@ -79,7 +79,8 @@ if __name__ == "__main__":
     problem.solve(solver="CLARABEL")
     print(problem.var_dict["Radius"].value)
 
-    p = np.random.randn(2, 2)
+    rng = np.random.default_rng(0)
+    p = rng.standard_normal((2, 2))
     problem = min_circle_cvx_2()
 
     def f():

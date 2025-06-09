@@ -64,8 +64,8 @@ def test_welzl_min_circle(points):
 
 
 def test_multiple_points():
-    np.random.seed(0)
-    pos = np.random.randn(800, 2)
+    rng = np.random.default_rng(0)
+    pos = rng.standard_normal((800, 2))
 
     def f():
         min_circle_welzl(list(pos))

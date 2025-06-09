@@ -1,10 +1,9 @@
-import numpy as np
-from typing import List
-
-
-from .utils.circle import Circle
-from .cvx import min_circle_cvx
 import secrets
+
+import numpy as np
+
+from .cvx import min_circle_cvx
+from .utils.circle import Circle
 
 
 # Calculate slopes of perpendicular bisectors
@@ -14,7 +13,7 @@ def perpendicular_slope(p1, p2):
     return -(p2[0] - p1[0]) / (p2[1] - p1[1])
 
 
-def make_circle_n_points(matrix: List[np.ndarray]) -> Circle:
+def make_circle_n_points(matrix: list[np.ndarray]) -> Circle:
     """Construct a circle with n points."""
 
     """Construct a circle from 1 to 3 points."""
@@ -88,10 +87,10 @@ def make_circle_n_points(matrix: List[np.ndarray]) -> Circle:
     #    return Circle(center=center, radius=radius)
 
 
-def welzl_helper(points: List[np.ndarray], R: List[np.ndarray], n: int) -> Circle:
+def welzl_helper(points: list[np.ndarray], r: list[np.ndarray], n: int) -> Circle:
     """Recursive helper function for Welzl's algorithm."""
-    if n == 0 or len(R) == 3:
-        return make_circle_n_points(R)
+    if n == 0 or len(r) == 3:
+        return make_circle_n_points(r)
 
     # Remove a random point by shuffling it to the end
     # we know at this stage that n > 0
@@ -102,7 +101,7 @@ def welzl_helper(points: List[np.ndarray], R: List[np.ndarray], n: int) -> Circl
     # Recursively compute the minimum circle without p
     # This is drilling down and open welzl_helper for each individual p!
     # R remains empty for now
-    circle = welzl_helper(points, R, n - 1)
+    circle = welzl_helper(points, r, n - 1)
     # finally it will arrive at n == 0 and R = []
     # It now calls make_circle_n_points with R = []
     # It returns a circle with radius -inf
@@ -118,9 +117,9 @@ def welzl_helper(points: List[np.ndarray], R: List[np.ndarray], n: int) -> Circl
 
     # Otherwise, p must be on the boundary of the minimum enclosing circle
     # now we add this final point, points is still empty
-    R.append(p)
-    circle = welzl_helper(points, R, n - 1)
-    R.pop()
+    r.append(p)
+    circle = welzl_helper(points, r, n - 1)
+    r.pop()
 
     return circle
 

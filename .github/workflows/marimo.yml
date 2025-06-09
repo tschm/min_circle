@@ -21,10 +21,4 @@ jobs:
       - name: Run notebooks
         run: |
           uv pip install --no-cache-dir marimo
-
-          # export all .py files in book/marimo directory
-          #for py_file in not/*.py; do
-          #    filename=$(basename "$py_file" .py)
-          #    echo "Processing $py_file"
           uv run python "notebooks/minimal enclosing circle.py"
-          #done
