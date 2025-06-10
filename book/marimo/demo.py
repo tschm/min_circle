@@ -9,7 +9,8 @@ with app.setup:
     import statistics as stats
 
     from solver.cvx import min_circle_cvx
-    from solver.welzl import min_circle_welzl
+
+    pos = np.random.randn(2600, 2)
 
 
 @app.cell
@@ -41,13 +42,6 @@ def _(mo):
 
 @app.cell
 def _():
-    # generate random points in space
-    pos = np.random.randn(2600, 2)
-    return (pos,)
-
-
-@app.cell
-def _():
     # Create the figure
     from solver.utils.figure import create_figure
 
@@ -56,7 +50,7 @@ def _():
 
 
 @app.cell
-def _(fig, pos):
+def _(fig):
     # add the cloud plot
     from solver.utils.cloud import Cloud
 
@@ -73,7 +67,7 @@ def _(mo):
 
 
 @app.cell
-def _(fig, pos):
+def _(fig):
     print(min_circle_cvx(points=pos, solver="CLARABEL"))
     circle = min_circle_cvx(points=pos, solver="CLARABEL")
     fig.add_trace(circle.scatter())
@@ -92,26 +86,6 @@ def _(fig, pos):
 @app.cell
 def _(mo):
     mo.md("""## Compute with Mosek""")
-    return
-
-
-@app.cell
-def _(mo):
-    mo.md("""## Compute using Welzl's algorithm""")
-    return
-
-
-@app.cell
-def _(pos):
-    print(min_circle_welzl(points=pos))
-
-    def welzl():
-        min_circle_welzl(points=pos)
-
-    # Run each 50 times
-    times_welzl = tt.repeat(welzl, number=1, repeat=100)
-
-    print(f"Implementation average: {stats.mean(times_welzl):.6f} seconds")
     return
 
 
