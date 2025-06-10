@@ -1,7 +1,16 @@
 import marimo
 
-__generated_with = "0.10.12"
+__generated_with = "0.13.15"
 app = marimo.App(width="medium")
+
+with app.setup:
+    import numpy as np
+    import timeit as tt
+    import statistics as stats
+
+    from solver.cvx import min_circle_cvx
+    from solver.mosek import min_circle_mosek
+    from solver.welzl import min_circle_welzl
 
 
 @app.cell
@@ -33,28 +42,6 @@ def _(mo):
 
 @app.cell
 def _():
-    import numpy as np
-    import timeit as tt
-    import statistics as stats
-
-    from solver.cvx import min_circle_cvx
-    from solver.hexaly import min_circle_hexaly
-    from solver.mosek import min_circle_mosek
-    from solver.welzl import min_circle_welzl
-
-    return (
-        min_circle_cvx,
-        min_circle_hexaly,
-        min_circle_mosek,
-        min_circle_welzl,
-        np,
-        stats,
-        tt,
-    )
-
-
-@app.cell
-def _(np):
     # generate random points in space
     pos = np.random.randn(2600, 2)
     return (pos,)
@@ -66,7 +53,7 @@ def _():
     from solver.utils.figure import create_figure
 
     fig = create_figure()
-    return create_figure, fig
+    return (fig,)
 
 
 @app.cell
@@ -77,7 +64,7 @@ def _(fig, pos):
     cloud = Cloud(points=pos)
 
     fig.add_trace(cloud.scatter())
-    return Cloud, cloud
+    return
 
 
 @app.cell
@@ -87,9 +74,7 @@ def _(mo):
 
 
 @app.cell
-def _(fig, pos, stats, tt):
-    from solver.cvx import min_circle_cvx
-
+def _(fig, pos):
     print(min_circle_cvx(points=pos, solver="CLARABEL"))
     print(min_circle_cvx(points=pos, solver="MOSEK"))
     circle = min_circle_cvx(points=pos, solver="CLARABEL")
@@ -108,14 +93,7 @@ def _(fig, pos, stats, tt):
 
     print(f"Implementation cvxpy/clarabel: {stats.mean(times_clarabel):.6f} seconds")
     print(f"Implementation cvxpy/mosek: {stats.mean(times_cvx_mosek):.6f} seconds")
-    return (
-        circle,
-        cvx1,
-        cvx2,
-        min_circle_cvx,
-        times_clarabel,
-        times_cvx_mosek,
-    )
+    return
 
 
 @app.cell
@@ -125,14 +103,7 @@ def _(mo):
 
 
 @app.cell
-def _():
-    from solver.mosek import min_circle_mosek
-
-    return (min_circle_mosek,)
-
-
-@app.cell
-def _(min_circle_mosek, pos, stats, tt):
+def _(pos):
     print(min_circle_mosek(points=pos))
 
     def mosek():
@@ -142,21 +113,7 @@ def _(min_circle_mosek, pos, stats, tt):
     times_mosek = tt.repeat(mosek, number=1, repeat=50)
 
     print(f"Implementation average: {stats.mean(times_mosek):.6f} seconds")
-    return mosek, times_mosek
-
-
-@app.cell
-def _(mo):
-    mo.md("""## Compute with Hexaly""")
     return
-
-
-@app.cell
-def _(pos):
-    from solver.hexaly import min_circle_hexaly
-
-    min_circle_hexaly(points=pos)
-    return (min_circle_hexaly,)
 
 
 @app.cell
@@ -166,9 +123,7 @@ def _(mo):
 
 
 @app.cell
-def _(pos, stats, tt):
-    from solver.welzl import min_circle_welzl
-
+def _(pos):
     print(min_circle_welzl(points=pos))
 
     def welzl():
@@ -178,7 +133,7 @@ def _(pos, stats, tt):
     times_welzl = tt.repeat(welzl, number=1, repeat=100)
 
     print(f"Implementation average: {stats.mean(times_welzl):.6f} seconds")
-    return times_welzl, welzl, min_circle_welzl
+    return
 
 
 if __name__ == "__main__":
