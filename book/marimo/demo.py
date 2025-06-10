@@ -9,7 +9,6 @@ with app.setup:
     import statistics as stats
 
     from solver.cvx import min_circle_cvx
-    from solver.mosek import min_circle_mosek
     from solver.welzl import min_circle_welzl
 
 
@@ -76,7 +75,6 @@ def _(mo):
 @app.cell
 def _(fig, pos):
     print(min_circle_cvx(points=pos, solver="CLARABEL"))
-    print(min_circle_cvx(points=pos, solver="MOSEK"))
     circle = min_circle_cvx(points=pos, solver="CLARABEL")
     fig.add_trace(circle.scatter())
     fig.show()
@@ -84,35 +82,16 @@ def _(fig, pos):
     def cvx1():
         min_circle_cvx(points=pos, solver="CLARABEL")
 
-    def cvx2():
-        min_circle_cvx(points=pos, solver="MOSEK")
-
     # Run each 1000 times
     times_clarabel = tt.repeat(cvx1, number=1, repeat=50)
-    times_cvx_mosek = tt.repeat(cvx2, number=1, repeat=50)
 
     print(f"Implementation cvxpy/clarabel: {stats.mean(times_clarabel):.6f} seconds")
-    print(f"Implementation cvxpy/mosek: {stats.mean(times_cvx_mosek):.6f} seconds")
     return
 
 
 @app.cell
 def _(mo):
     mo.md("""## Compute with Mosek""")
-    return
-
-
-@app.cell
-def _(pos):
-    print(min_circle_mosek(points=pos))
-
-    def mosek():
-        min_circle_mosek(pos)
-
-    # Run each 1000 times
-    times_mosek = tt.repeat(mosek, number=1, repeat=50)
-
-    print(f"Implementation average: {stats.mean(times_mosek):.6f} seconds")
     return
 
 
