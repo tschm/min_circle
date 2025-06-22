@@ -4,10 +4,10 @@ __generated_with = "0.13.15"
 app = marimo.App(width="medium")
 
 with app.setup:
-    import numpy as np
-    import timeit as tt
     import statistics as stats
+    import timeit as tt
 
+    import numpy as np
     from solver.cvx import min_circle_cvx
 
     pos = np.random.randn(2600, 2)
@@ -22,7 +22,11 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(
-        """We compute the radius and center of the smallest enclosing ball for $N$ points in $d$ dimensions. We use a variety of tools and compare their performance. For fun we included the recursive algorithm by Emo Welzl. Hence we work with $d=2$."""
+        """We compute the radius and center of the smallest enclosing
+        ball for $N$ points in $d$ dimensions.
+        We use a variety of tools and compare their performance.
+        For fun we included the recursive algorithm by Emo Welzl.
+        Hence we work with $d=2$."""
     )
     return
 

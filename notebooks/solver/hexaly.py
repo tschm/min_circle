@@ -11,12 +11,7 @@ def min_circle_hexaly(points, **kwargs):
         #
         model = optimizer.model
 
-        z = np.array(
-            [
-                model.float(np.min(points[:, j]), np.max(points[:, j]))
-                for j in range(points.shape[1])
-            ]
-        )
+        z = np.array([model.float(np.min(points[:, j]), np.max(points[:, j])) for j in range(points.shape[1])])
 
         radius = [np.sum((z - point) ** 2) for point in points]
 

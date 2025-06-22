@@ -1,10 +1,10 @@
-import numpy as np
+import secrets
 from typing import List
 
+import numpy as np
 
-from .utils.circle import Circle
 from .cvx import min_circle_cvx
-import secrets
+from .utils.circle import Circle
 
 
 # Calculate slopes of perpendicular bisectors

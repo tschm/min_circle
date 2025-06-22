@@ -1,5 +1,4 @@
 import numpy as np
-
 import pytest
 
 from notebooks.solver.cvx import min_circle_cvx

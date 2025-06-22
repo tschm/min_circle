@@ -1,4 +1,5 @@
 import mosek.fusion as mf
+
 from .utils.circle import Circle
 
 
