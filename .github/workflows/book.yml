@@ -26,20 +26,6 @@ jobs:
         uses:
           notebooks: book/marimo
 
-  # Job to build the Jupyter Book documentation
-  # This converts Jupyter notebooks to a static website with navigation
-  #jupyter:
-  #  runs-on: "ubuntu-latest"
-  #  steps:
-  #    # Set up the Python virtual environment with all required dependencies
-  #    # This uses a reusable action from the cradle repository
-  #    - name: "Build the virtual environment for ${{ github.repository }}"
-  #      uses: tschm/cradle/actions/environment@v0.1.71
-  #
-  #    # Build the Jupyter Book using a reusable action
-  #    # This action handles the book building process including configuration
-  #    - uses: tschm/cradle/actions/jupyter@v0.1.71
-
   # Job to combine all artifacts and prepare them for deployment
   # This job runs after both jupyter and marimo jobs have completed
   build:
