@@ -13,6 +13,15 @@ on:
     branches:
       - main
 
+# Permissions required for GitHub Pages deployment
+permissions:
+  contents: read  # Read access to repository contents
+  pages: write    # Write access to GitHub Pages
+  id-token: write # Write access to OIDC token for authentication
+
+# Environment configuration for GitHub Pages
+environment:
+  name: github-pages  # Predefined GitHub Pages environment
 
 # This workflow contains multiple jobs that run in parallel and sequentially
 jobs:
