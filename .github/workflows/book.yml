@@ -21,9 +21,9 @@ jobs:
   marimo:
     runs-on: ubuntu-latest
     steps:
-      - name: Export Marimo notebooks
-        with: jebel-quant/marimushka@v0.1.1
-        uses:
+      - name: Marimushka Export Action
+        uses: Jebel-Quant/marimushka@v0.1.1
+        with:
           notebooks: book/marimo
 
   # Job to build and publish the book documentation
