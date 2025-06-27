@@ -26,20 +26,19 @@ jobs:
         uses:
           notebooks: book/marimo
 
-  # Job to combine all artifacts and prepare them for deployment
-  # This job runs after both jupyter and marimo jobs have completed
-  build:
-    permissions:
-      pages: write            # Permission to deploy to Pages
-      id-token: write         # Permission to verify deployment origin
-    runs-on: ubuntu-latest
-    needs: [marimo]  # This job depends on both jupyter and marimo jobs
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  # Job to build and publish the book documentation
+  book:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+    needs: [marimo]     # This job will only run after test and pdoc jobs complete successfully
     steps:
-      - name: Publish book
-        id: deployment
-        uses: tschm/cradle/actions/book@main
+      # Generate Minibook and Deploy to GitHub Pages
+      # The book action automatically downloads all artifacts from the jobs defined in needs
+      - name: Generate Minibook and Deploy to GitHub Pages
+        uses: tschm/minibook/.github/actions/book@main  # Use the minibook action
         with:
-          path: artifacts/marimushka
+          # Title that appears at the top of the generated page
+          title: "MinCircle"
+          links: |
+            {
+              "Notebooks": "./marimushka/index.html"
+            }
