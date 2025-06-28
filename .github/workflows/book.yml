@@ -1,4 +1,4 @@
-name: deploy-book
+name: book
 
 # Trigger the workflow on push events
 # This ensures the documentation is automatically updated whenever code changes are pushed
@@ -14,8 +14,8 @@ permissions:
   id-token: write # Write access to OIDC token for authentication
 
 # Environment configuration for GitHub Pages
-environment:
-  name: github-pages  # Predefined GitHub Pages environment
+# environment:
+#    name: github-pages  # Predefined GitHub Pages environment
 
 # This workflow contains multiple jobs that run in parallel and sequentially
 jobs:
