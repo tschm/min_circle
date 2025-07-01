@@ -8,6 +8,7 @@ with app.setup:
     import timeit as tt
 
     import numpy as np
+
     from .solver.cvx import min_circle_cvx
     from .solver.mosek import min_circle_mosek
     from .solver.welzl import min_circle_welzl
