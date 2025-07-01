@@ -1,14 +1,3 @@
-# /// script
-# requires-python = ">=3.12"
-# dependencies = [
-#     "marimo==0.14.9",
-#     "numpy==2.3.0",
-#     "plotly==6.1.2",
-#     "cvxpy-base==1.6.0",
-#     "clarabel==0.11.1",
-#     "mosek==11.0.24",
-# ]
-# ///
 import marimo
 
 __generated_with = "0.14.0"
@@ -18,21 +7,21 @@ with app.setup:
     import statistics as stats
     import timeit as tt
 
-    import marimo as mo
     import numpy as np
-    # from solver.cvx import min_circle_cvx
-    # from solver.mosek import min_circle_mosek
-    # from solver.welzl import min_circle_welzl
+
+    from .solver.cvx import min_circle_cvx
+    from .solver.mosek import min_circle_mosek
+    from .solver.welzl import min_circle_welzl
 
 
 @app.cell
-def _():
+def _(mo):
     mo.md("""# Problem""")
     return
 
 
 @app.cell
-def _():
+def _(mo):
     mo.md(
         """
     We compute the radius and center of the smallest enclosing
@@ -45,8 +34,15 @@ def _():
     return
 
 
-@app.cell(hide_code=True)
+@app.cell
 def _():
+    import marimo as mo
+
+    return (mo,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
     mo.md(r"""## Generate a cloud of points""")
     return
 
@@ -79,15 +75,13 @@ def _(fig, pos):
 
 
 @app.cell
-def _():
+def _(mo):
     mo.md("""## Compute with cvxpy""")
     return
 
 
 @app.cell
 def _(fig, pos):
-    from solver.cvx import min_circle_cvx
-
     print(min_circle_cvx(points=pos, solver="CLARABEL"))
     print(min_circle_cvx(points=pos, solver="MOSEK"))
     circle = min_circle_cvx(points=pos, solver="CLARABEL")
@@ -110,15 +104,13 @@ def _(fig, pos):
 
 
 @app.cell
-def _():
+def _(mo):
     mo.md("""## Compute with Mosek""")
     return
 
 
 @app.cell
 def _(pos):
-    from solver.mosek import min_circle_mosek
-
     print(min_circle_mosek(points=pos))
 
     def mosek():
@@ -132,15 +124,13 @@ def _(pos):
 
 
 @app.cell
-def _():
+def _(mo):
     mo.md("""## Compute using Welzl's algorithm""")
     return
 
 
 @app.cell
 def _(pos):
-    from solver.welzl import min_circle_welzl
-
     print(min_circle_welzl(points=pos))
 
     def welzl():
