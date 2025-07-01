@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.13.15"
+__generated_with = "0.14.0"
 app = marimo.App(width="medium")
 
 with app.setup:
@@ -8,9 +8,10 @@ with app.setup:
     import timeit as tt
 
     import numpy as np
-    from solver.cvx import min_circle_cvx
-    from solver.mosek import min_circle_mosek
-    from solver.welzl import min_circle_welzl
+
+    from .solver.cvx import min_circle_cvx
+    from .solver.mosek import min_circle_mosek
+    from .solver.welzl import min_circle_welzl
 
 
 @app.cell
@@ -22,11 +23,13 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(
-        """We compute the radius and center of the smallest enclosing
+        """
+    We compute the radius and center of the smallest enclosing
         ball for $N$ points in $d$ dimensions.
         We use a variety of tools and compare their performance.
         For fun we included the recursive algorithm by Emo Welzl.
-        Hence we work with $d=2$."""
+        Hence we work with $d=2$.
+    """
     )
     return
 
