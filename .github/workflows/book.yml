@@ -37,7 +37,7 @@ jobs:
       # Generate Minibook and Deploy to GitHub Pages
       # The book action automatically downloads all artifacts from the jobs defined in needs
       - name: Generate Minibook and Deploy to GitHub Pages
-        uses: tschm/minibook/.github/actions/book@main  # Use the minibook action
+        uses: tschm/cradle/actions/book@v0.1.73  # Use the minibook action
         with:
           # Title that appears at the top of the generated page
           title: "MinCircle"
