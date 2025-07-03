@@ -1,3 +1,11 @@
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "marimo==0.14.10",
+#     "numpy==2.3.1",
+#     "plotly==6.1.2"
+# ]
+# ///
 import marimo
 
 __generated_with = "0.14.0"
@@ -7,6 +15,7 @@ with app.setup:
     import statistics as stats
     import timeit as tt
 
+    import marimo as mo
     import numpy as np
 
     from .solver.cvx import min_circle_cvx
@@ -15,13 +24,13 @@ with app.setup:
 
 
 @app.cell
-def _(mo):
+def _():
     mo.md("""# Problem""")
     return
 
 
 @app.cell
-def _(mo):
+def _():
     mo.md(
         """
     We compute the radius and center of the smallest enclosing
@@ -34,15 +43,8 @@ def _(mo):
     return
 
 
-@app.cell
-def _():
-    import marimo as mo
-
-    return (mo,)
-
-
 @app.cell(hide_code=True)
-def _(mo):
+def _():
     mo.md(r"""## Generate a cloud of points""")
     return
 
@@ -75,7 +77,7 @@ def _(fig, pos):
 
 
 @app.cell
-def _(mo):
+def _():
     mo.md("""## Compute with cvxpy""")
     return
 
@@ -104,7 +106,7 @@ def _(fig, pos):
 
 
 @app.cell
-def _(mo):
+def _():
     mo.md("""## Compute with Mosek""")
     return
 
@@ -124,7 +126,7 @@ def _(pos):
 
 
 @app.cell
-def _(mo):
+def _():
     mo.md("""## Compute using Welzl's algorithm""")
     return
 
