@@ -1,9 +1,18 @@
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "marimo==0.14.10",
+#     "numpy==2.3.1",
+#     "plotly==6.1.2"
+# ]
+# ///
 import marimo
 
 __generated_with = "0.13.15"
 app = marimo.App(width="medium")
 
 with app.setup:
+    import marimo as mo
     import statistics as stats
     import timeit as tt
 
@@ -14,13 +23,13 @@ with app.setup:
 
 
 @app.cell
-def _(mo):
+def _():
     mo.md("""# Problem""")
     return
 
 
 @app.cell
-def _(mo):
+def _():
     mo.md(
         """We compute the radius and center of the smallest enclosing
         ball for $N$ points in $d$ dimensions.
@@ -31,15 +40,8 @@ def _(mo):
     return
 
 
-@app.cell
-def _():
-    import marimo as mo
-
-    return (mo,)
-
-
 @app.cell(hide_code=True)
-def _(mo):
+def _():
     mo.md(r"""## Generate a cloud of points""")
     return
 
@@ -65,7 +67,7 @@ def _(fig):
 
 
 @app.cell
-def _(mo):
+def _():
     mo.md("""## Compute with cvxpy""")
     return
 
@@ -84,12 +86,6 @@ def _(fig):
     times_clarabel = tt.repeat(cvx1, number=1, repeat=50)
 
     print(f"Implementation cvxpy/clarabel: {stats.mean(times_clarabel):.6f} seconds")
-    return
-
-
-@app.cell
-def _(mo):
-    mo.md("""## Compute with Mosek""")
     return
 
 
