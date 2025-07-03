@@ -12,10 +12,10 @@ __generated_with = "0.13.15"
 app = marimo.App(width="medium")
 
 with app.setup:
-    import marimo as mo
     import statistics as stats
     import timeit as tt
 
+    import marimo as mo
     import numpy as np
     from solver.cvx import min_circle_cvx
 
