@@ -25,9 +25,9 @@ jobs:
       contents: read          # Minimal permissions for read-only operations
     steps:
       - name: "Build the virtual environment for ${{ github.repository }}"
-        uses: tschm/cradle/actions/environment@v0.1.75
+        uses: tschm/cradle/actions/environment@v0.2.1
 
-      - uses: tschm/cradle/actions/coverage@v0.1.75
+      - uses: tschm/cradle/actions/coverage@v0.2.1
         with:
           source-folder: 'notebooks'
           tests-folder: 'tests'
@@ -41,7 +41,7 @@ jobs:
       id-token: write         # Permission to verify deployment origin
 
     steps:
-      - uses: tschm/cradle/actions/book@v0.1.75
+      - uses: tschm/cradle/actions/book@v0.2.1
         with:
           title: Min Circle
           links: |
