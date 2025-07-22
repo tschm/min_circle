@@ -1,3 +1,12 @@
+"""Marimo app for comparing minimum enclosing circle algorithms.
+
+This module provides an interactive Marimo application that demonstrates
+and compares different algorithms for computing the minimum enclosing circle
+for a set of randomly generated points. It includes implementations using
+CVXPY with different solvers (CLARABEL and MOSEK), direct MOSEK Fusion,
+and Welzl's recursive algorithm, along with performance benchmarks.
+"""
+
 # /// script
 # requires-python = ">=3.13"
 # dependencies = [

@@ -1,3 +1,11 @@
+"""Marimo app for demonstrating minimum enclosing circle algorithms.
+
+This module provides an interactive Marimo application that demonstrates
+the computation of the minimum enclosing circle for a set of randomly
+generated points using various algorithms, particularly focusing on
+the CVXPY implementation with the CLARABEL solver.
+"""
+
 # /// script
 # requires-python = ">=3.13"
 # dependencies = [
@@ -17,7 +25,8 @@ with app.setup:
 
     import marimo as mo
     import numpy as np
-    from solver.cvx import min_circle_cvx
+
+    from src.min_circle import min_circle_cvx
 
     pos = np.random.randn(2600, 2)
 
@@ -49,7 +58,7 @@ def _():
 @app.cell
 def _():
     # Create the figure
-    from solver.utils.figure import create_figure
+    from src.min_circle import create_figure
 
     fig = create_figure()
     return (fig,)
@@ -58,7 +67,7 @@ def _():
 @app.cell
 def _(fig):
     # add the cloud plot
-    from solver.utils.cloud import Cloud
+    from src.min_circle.utils.cloud import Cloud
 
     cloud = Cloud(points=pos)
 

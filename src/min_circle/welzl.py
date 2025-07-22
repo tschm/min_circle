@@ -1,5 +1,10 @@
+"""Welzl's algorithm implementation for finding the minimum enclosing circle.
+
+This module provides an implementation of Welzl's randomized algorithm
+for finding the minimum enclosing circle of a set of points in 2D space.
+"""
+
 import secrets
-from typing import List
 
 import numpy as np
 
@@ -7,17 +12,30 @@ from .cvx import min_circle_cvx
 from .utils.circle import Circle
 
 
-# Calculate slopes of perpendicular bisectors
-def perpendicular_slope(p1, p2):
+def perpendicular_slope(p1: np.ndarray, p2: np.ndarray) -> float:
+    """Calculate the slope of the perpendicular bisector between two points.
+
+    Args:
+        p1: First point as a numpy array [x, y]
+        p2: Second point as a numpy array [x, y]
+
+    Returns:
+        The slope of the perpendicular bisector line
+    """
     if p2[1] == p1[1]:  # horizontal line
-        return np.inf  # Perpendicular line is horizontal
+        return np.inf  # Perpendicular bisector is vertical
     return -(p2[0] - p1[0]) / (p2[1] - p1[1])
 
 
-def make_circle_n_points(matrix: List[np.ndarray]) -> Circle:
-    """Construct a circle with n points."""
+def make_circle_n_points(matrix: list[np.ndarray]) -> Circle:
+    """Construct a circle from 0 to 3 points.
 
-    """Construct a circle from 1 to 3 points."""
+    Args:
+        matrix: List of points (up to 3) as numpy arrays
+
+    Returns:
+        Circle object containing the center and radius of the circle
+    """
     num_points = len(matrix)
 
     if num_points == 0:
@@ -88,10 +106,10 @@ def make_circle_n_points(matrix: List[np.ndarray]) -> Circle:
     #    return Circle(center=center, radius=radius)
 
 
-def welzl_helper(points: List[np.ndarray], R: List[np.ndarray], n: int) -> Circle:
+def welzl_helper(points: list[np.ndarray], r: list[np.ndarray], n: int) -> Circle:
     """Recursive helper function for Welzl's algorithm."""
-    if n == 0 or len(R) == 3:
-        return make_circle_n_points(R)
+    if n == 0 or len(r) == 3:
+        return make_circle_n_points(r)
 
     # Remove a random point by shuffling it to the end
     # we know at this stage that n > 0
@@ -102,7 +120,7 @@ def welzl_helper(points: List[np.ndarray], R: List[np.ndarray], n: int) -> Circl
     # Recursively compute the minimum circle without p
     # This is drilling down and open welzl_helper for each individual p!
     # R remains empty for now
-    circle = welzl_helper(points, R, n - 1)
+    circle = welzl_helper(points, r, n - 1)
     # finally it will arrive at n == 0 and R = []
     # It now calls make_circle_n_points with R = []
     # It returns a circle with radius -inf
@@ -118,22 +136,24 @@ def welzl_helper(points: List[np.ndarray], R: List[np.ndarray], n: int) -> Circl
 
     # Otherwise, p must be on the boundary of the minimum enclosing circle
     # now we add this final point, points is still empty
-    R.append(p)
-    circle = welzl_helper(points, R, n - 1)
-    R.pop()
+    r.append(p)
+    circle = welzl_helper(points, r, n - 1)
+    r.pop()
 
     return circle
 
 
-def min_circle_welzl(points: np.ndarray) -> Circle:
-    """
-    Find the minimum enclosing circle using Welzl's algorithm.
+def min_circle_welzl(points: np.ndarray | list[np.ndarray]) -> Circle:
+    """Find the minimum enclosing circle using Welzl's algorithm.
+
+    This is the main entry point for Welzl's randomized algorithm. It takes a set of points
+    and returns the smallest circle that contains all the points.
 
     Args:
-        points: List of points as numpy arrays
+        points: Array or list of 2D points
 
     Returns:
-        Circle object containing center coordinates and radius
+        Circle object containing the center and radius of the minimum enclosing circle
     """
     if isinstance(points, np.ndarray):
         points = list(points)
