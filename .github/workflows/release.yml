@@ -13,6 +13,6 @@ jobs:
 
     steps:
       - name: Generate Tag
-        uses: tschm/cradle/actions/tag@v0.3.01
+        uses: tschm/cradle/actions/tag@v0.3.04
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
