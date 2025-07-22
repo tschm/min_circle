@@ -4,7 +4,7 @@ import timeit
 import numpy as np
 import pytest
 
-from notebooks.solver.welzl import (
+from min_circle.welzl import (
     make_circle_n_points,
     min_circle_welzl,
     welzl_helper,

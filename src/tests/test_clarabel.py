@@ -1,10 +1,10 @@
 import numpy as np
 import pytest
 
-from notebooks.solver.cvx import min_circle_cvx
-from notebooks.solver.utils.cloud import Cloud
-from notebooks.solver.utils.figure import create_figure
-from notebooks.solver.welzl import make_circle_n_points
+from min_circle.cvx import min_circle_cvx
+from min_circle.utils.cloud import Cloud
+from min_circle.utils.figure import create_figure
+from min_circle.welzl import make_circle_n_points
 
 
 def test_clarabel(points):
