@@ -30,7 +30,7 @@ jobs:
       - uses: tschm/cradle/actions/coverage@v0.3.04
         with:
           source-folder: 'notebooks'
-          tests-folder: 'tests'
+          tests-folder: 'src/tests'
 
   book:
     runs-on: "ubuntu-latest"
