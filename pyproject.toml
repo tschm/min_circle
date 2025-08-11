@@ -19,8 +19,7 @@ dev = [
     "pytest-cov==6.2.1",
     "pytest==8.4.1",
     "pre-commit==4.2.0",
-    "marimo>=0.13.0",
-    "python-dotenv==1.1.1"
+    "marimo>=0.14.16"
 ]
 
 solvers = [
