@@ -18,7 +18,7 @@ with app.setup:
     import marimo as mo
     import numpy as np
 
-    from min_circle import min_circle_cvx
+    from min_circle.cvx import min_circle
 
     pos = np.random.randn(2600, 2)
 
