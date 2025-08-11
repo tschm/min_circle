@@ -6,14 +6,6 @@ generated points using various algorithms, particularly focusing on
 the CVXPY implementation with the CLARABEL solver.
 """
 
-# /// script
-# requires-python = ">=3.13"
-# dependencies = [
-#     "marimo==0.14.10",
-#     "numpy==2.3.1",
-#     "plotly==6.1.2"
-# ]
-# ///
 import marimo
 
 __generated_with = "0.13.15"
@@ -26,7 +18,7 @@ with app.setup:
     import marimo as mo
     import numpy as np
 
-    from src.min_circle import min_circle_cvx
+    from min_circle.cvx import min_circle_cvx
 
     pos = np.random.randn(2600, 2)
 
@@ -58,7 +50,7 @@ def _():
 @app.cell
 def _():
     # Create the figure
-    from src.min_circle import create_figure
+    from min_circle.utils.figure import create_figure
 
     fig = create_figure()
     return (fig,)
@@ -67,7 +59,7 @@ def _():
 @app.cell
 def _(fig):
     # add the cloud plot
-    from src.min_circle.utils.cloud import Cloud
+    from min_circle.utils.cloud import Cloud
 
     cloud = Cloud(points=pos)
 
