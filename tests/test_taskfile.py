@@ -32,12 +32,13 @@ class TestTaskfile:
         shutil.copy(os.path.join(self.original_dir, "Taskfile.yml"), self.temp_dir)
 
         # Copy taskfiles directory to temp directory
-        if os.path.exists(os.path.join(self.original_dir, "taskfiles")):
-            taskfiles_dir = os.path.join(self.temp_dir, "taskfiles")
+        github_taskfiles_path = os.path.join(self.original_dir, ".github", "taskfiles")
+        if os.path.exists(github_taskfiles_path):
+            taskfiles_dir = os.path.join(self.temp_dir, ".github", "taskfiles")
             os.makedirs(taskfiles_dir, exist_ok=True)
-            for file in os.listdir(os.path.join(self.original_dir, "taskfiles")):
+            for file in os.listdir(github_taskfiles_path):
                 if file.endswith(".yml"):
-                    shutil.copy(os.path.join(self.original_dir, "taskfiles", file), os.path.join(taskfiles_dir, file))
+                    shutil.copy(os.path.join(github_taskfiles_path, file), os.path.join(taskfiles_dir, file))
 
         # Create a minimal README.md in the temp directory
         self.create_file("README.md", "# Test README\n")
