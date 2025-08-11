@@ -18,7 +18,7 @@ with app.setup:
     import marimo as mo
     import numpy as np
 
-    from min_circle.cvx import min_circle
+    from min_circle.cvx import min_circle_cvx
 
     pos = np.random.randn(2600, 2)
 
@@ -50,7 +50,7 @@ def _():
 @app.cell
 def _():
     # Create the figure
-    from src.min_circle import create_figure
+    from min_circle.utils.figure import create_figure
 
     fig = create_figure()
     return (fig,)
