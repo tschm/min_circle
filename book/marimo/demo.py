@@ -59,7 +59,7 @@ def _():
 @app.cell
 def _(fig):
     # add the cloud plot
-    from src.min_circle.utils.cloud import Cloud
+    from min_circle.utils.cloud import Cloud
 
     cloud = Cloud(points=pos)
 
