@@ -2,11 +2,14 @@
 
 This module provides functions to find the minimum enclosing circle
 using the MOSEK Fusion optimization library.
+
+Note:
+    The MOSEK dependency is optional. Importing this module no longer requires
+    MOSEK to be installed. The import happens lazily inside the solver function.
 """
 
 from typing import Any
 
-import mosek.fusion as mf
 import numpy as np
 
 from .utils.circle import Circle
@@ -25,10 +28,22 @@ def min_circle_mosek(points: np.ndarray, **kwargs: Any) -> Circle:
     Returns:
         Circle object containing the center and radius of the minimum enclosing circle
 
+    Raises:
+        ImportError: If the `mosek` package is not installed. Install with
+            `pip install 'min_circle[solvers]'` or add the `solvers` extra.
+
     Notes:
         Implementation based on MOSEK's minimum ellipsoid tutorial:
         https://github.com/MOSEK/Tutorials/blob/master/minimum-ellipsoid/minimum-ellipsoid.ipynb
     """
+    try:
+        import mosek.fusion as mf  # type: ignore
+    except Exception as exc:  # pragma: no cover - only hit when MOSEK is missing
+        raise ImportError(
+            "MOSEK is required for min_circle_mosek(). Install with `pip install 'min_circle[solvers]'` "
+            "or install the `mosek` package manually."
+        ) from exc
+
     with mf.Model() as model:
         # Create variables for radius and center
         r = model.variable("Radius", 1)
