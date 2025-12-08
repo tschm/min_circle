@@ -4,7 +4,7 @@ version = "0.0.1"
 description = "Compute the minimal enclosing circle for a set of points in m-dimensional space"
 authors = [{name = "Thomas Schmelzer", email = "thomas.schmelzer@gmail.com"}]
 readme = "README.md"
-requires-python = ">=3.11,<3.14"
+requires-python = ">=3.14,<3.15"
 dependencies = [
     "numpy>=2.3.5",
     "cvxpy-base>=1.7.5",
