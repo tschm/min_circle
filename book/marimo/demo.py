@@ -11,7 +11,8 @@ the CVXPY implementation with the CLARABEL solver.
 #     "marimo==0.18.4",
 #     "plotly",
 #     "min_circle",
-#     "loguru"
+#     "loguru",
+#     "clarabel",
 # ]
 #
 # [tool.uv.sources]
