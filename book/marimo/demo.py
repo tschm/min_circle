@@ -6,6 +6,20 @@ generated points using various algorithms, particularly focusing on
 the CVXPY implementation with the CLARABEL solver.
 """
 
+# /// script
+# dependencies = [
+#     "marimo==0.18.4",
+#     "plotly",
+#     "min_circle",
+#     "loguru",
+#     "clarabel",
+# ]
+#
+# [tool.uv.sources]
+# min_circle = { path = "../..", editable=true }
+#
+# ///
+
 import marimo
 
 __generated_with = "0.13.15"
