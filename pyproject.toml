@@ -19,7 +19,8 @@ dev = [
     "pytest-cov==7.0.0",
     "pytest==9.0.2",
     "pre-commit==4.5.1",
-    "marimo>=0.18.3"
+    "marimo>=0.18.3",
+    "python-dotenv>=1.2.1"
 ]
 
 solvers = [
@@ -43,3 +44,4 @@ pep621_dev_dependency_groups = ["dev"]
 
 [tool.deptry.package_module_name_map]
 cvxpy-base = ["cvxpy"]
+
