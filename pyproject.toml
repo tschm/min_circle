@@ -14,16 +14,13 @@ dependencies = [
 [project.urls]
 repository = "https://github.com/tschm/min_circle"
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
-    "pytest-cov>=7.0",
-    "pytest-html>=4.0",
-    "pytest>=9.0",
-    "pre-commit==4.5.1",
-    "marimo>=0.18.3",
-    "python-dotenv>=1.2.1"
+    "marimo>=0.18.4",
+    "pandas>=2.3"
 ]
 
+[project.optional-dependencies]
 solvers = [
     "clarabel>=0.11.1",
     "mosek>=11.0.30"
@@ -38,10 +35,6 @@ DEP002 = ["clarabel"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/min_circle"]
-
-[tool.deptry]
-# see https://deptry.com/usage/#pep-621-dev-dependency-groups
-pep621_dev_dependency_groups = ["dev"]
 
 [tool.deptry.package_module_name_map]
 cvxpy-base = ["cvxpy"]
