@@ -21,6 +21,15 @@ def perpendicular_slope(p1: np.ndarray, p2: np.ndarray) -> float:
 
     Returns:
         The slope of the perpendicular bisector line
+
+    Examples:
+        >>> import numpy as np
+        >>> perpendicular_slope(np.array([0.0, 0.0]), np.array([2.0, 2.0]))
+        -1.0
+        >>> perpendicular_slope(np.array([0.0, 0.0]), np.array([1.0, 0.0]))
+        inf
+        >>> perpendicular_slope(np.array([0.0, 0.0]), np.array([2.0, 1.0]))
+        -2.0
     """
     if p2[1] == p1[1]:  # horizontal line
         return float(np.inf)  # Perpendicular bisector is vertical
