@@ -21,6 +21,14 @@ class Circle:
     Attributes:
         center: A numpy array of shape (2,) representing the x,y coordinates of the center
         radius: The radius of the circle
+
+    Examples:
+        >>> import numpy as np
+        >>> c = Circle(center=np.array([0.0, 0.0]), radius=1.0)
+        >>> c.radius
+        1.0
+        >>> c.center
+        array([0., 0.])
     """
 
     center: np.ndarray
@@ -43,6 +51,18 @@ class Circle:
 
         Returns:
             True if the point is inside or on the circle boundary, False otherwise
+
+        Examples:
+            >>> import numpy as np
+            >>> c = Circle(center=np.array([0.0, 0.0]), radius=1.0)
+            >>> c.contains(np.array([0.0, 0.0]))  # center point
+            True
+            >>> c.contains(np.array([1.0, 0.0]))  # on boundary
+            True
+            >>> c.contains(np.array([0.5, 0.5]))  # inside
+            True
+            >>> c.contains(np.array([1.0, 1.0]))  # outside
+            False
         """
         return bool(np.linalg.norm(point - self.center) <= self.radius + tolerance)
 

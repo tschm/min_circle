@@ -26,6 +26,15 @@ def min_circle_cvx(points: np.ndarray, **kwargs: Any) -> Circle:
 
     Returns:
         Circle object containing the center and radius of the minimum enclosing circle
+
+    Examples:
+        >>> import numpy as np
+        >>> points = np.array([[0.0, 0.0], [2.0, 0.0]])
+        >>> circle = min_circle_cvx(points, solver="CLARABEL")
+        >>> round(circle.radius, 6)
+        1.0
+        >>> np.round(circle.center, 6)
+        array([1., 0.])
     """
     # CVXPY variable for the radius
     r = cp.Variable(name="Radius")
