@@ -23,8 +23,8 @@ def perpendicular_slope(p1: np.ndarray, p2: np.ndarray) -> float:
         The slope of the perpendicular bisector line
     """
     if p2[1] == p1[1]:  # horizontal line
-        return np.inf  # Perpendicular bisector is vertical
-    return -(p2[0] - p1[0]) / (p2[1] - p1[1])
+        return float(np.inf)  # Perpendicular bisector is vertical
+    return float(-(p2[0] - p1[0]) / (p2[1] - p1[1]))
 
 
 def make_circle_n_points(matrix: list[np.ndarray]) -> Circle:
@@ -46,6 +46,9 @@ def make_circle_n_points(matrix: list[np.ndarray]) -> Circle:
 
     if num_points == 2 or num_points == 3:
         return min_circle_cvx(np.array(matrix), solver="CLARABEL")
+
+    msg = f"Expected 0-3 points, got {num_points}"
+    raise ValueError(msg)
 
     # if num_points == 2:
     #    # Two points: the center is the midpoint, radius is half the distance

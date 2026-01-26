@@ -113,7 +113,7 @@ def min_circle_cvx_2() -> cp.Problem:
     return problem
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     # Example with 3 points
     p = np.array([[0, 0], [0.0, 2.0], [4.0, 4.0]])
     problem = min_circle_cvx_3()

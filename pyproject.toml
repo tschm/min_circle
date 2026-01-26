@@ -38,4 +38,13 @@ packages = ["src/min_circle"]
 
 [tool.deptry.package_module_name_map]
 cvxpy-base = ["cvxpy"]
+numpy = ["numpy"]
+plotly = ["plotly"]
+clarabel = ["clarabel"]
+mosek = ["mosek"]
+marimo = ["marimo"]
+pandas = ["pandas"]
+
+[tool.mypy]
+ignore_missing_imports = true
 

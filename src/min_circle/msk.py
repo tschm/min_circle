@@ -14,6 +14,11 @@ import numpy as np
 
 from .utils.circle import Circle
 
+_MOSEK_IMPORT_ERROR = (
+    "MOSEK is required for min_circle_mosek(). Install with `pip install 'min_circle[solvers]'` "
+    "or install the `mosek` package manually."
+)
+
 
 def min_circle_mosek(points: np.ndarray, **kwargs: Any) -> Circle:
     """Find the minimum enclosing circle using MOSEK Fusion.
@@ -37,12 +42,9 @@ def min_circle_mosek(points: np.ndarray, **kwargs: Any) -> Circle:
         https://github.com/MOSEK/Tutorials/blob/master/minimum-ellipsoid/minimum-ellipsoid.ipynb
     """
     try:
-        import mosek.fusion as mf  # type: ignore
+        import mosek.fusion as mf
     except Exception as exc:  # pragma: no cover - only hit when MOSEK is missing
-        raise ImportError(
-            "MOSEK is required for min_circle_mosek(). Install with `pip install 'min_circle[solvers]'` "
-            "or install the `mosek` package manually."
-        ) from exc
+        raise ImportError(_MOSEK_IMPORT_ERROR) from exc
 
     with mf.Model() as model:
         # Create variables for radius and center

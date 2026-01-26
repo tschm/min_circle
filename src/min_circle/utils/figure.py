@@ -24,10 +24,10 @@ def create_figure() -> go.Figure:
         xaxis_title="x",
         yaxis_title="y",
         # Ensure equal scaling for x and y axes (important for circles)
-        yaxis=dict(
-            scaleanchor="x",
-            scaleratio=1,
-        ),
+        yaxis={
+            "scaleanchor": "x",
+            "scaleratio": 1,
+        },
     )
 
     return fig

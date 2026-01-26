@@ -119,3 +119,39 @@ def test_multiple_points() -> None:
     times_welzl = timeit.repeat(f, number=1, repeat=100)
     # Calculate and print the mean execution time
     print(f"Mean execution time: {statistics.mean(times_welzl):.6f} seconds")
+
+
+def test_too_many_points_raises_error() -> None:
+    """Test that make_circle_n_points raises ValueError for more than 3 points."""
+    p = [np.array([0, 0]), np.array([1, 0]), np.array([0, 1]), np.array([1, 1])]
+    with pytest.raises(ValueError, match="Expected 0-3 points, got 4"):
+        make_circle_n_points(p)
+
+
+def test_perpendicular_slope_horizontal() -> None:
+    """Test perpendicular_slope with a horizontal line returns infinity."""
+    from min_circle.welzl import perpendicular_slope
+
+    p1 = np.array([0, 0])
+    p2 = np.array([4, 0])  # Horizontal line
+    slope = perpendicular_slope(p1, p2)
+    assert np.isinf(slope)
+
+
+def test_perpendicular_slope_diagonal() -> None:
+    """Test perpendicular_slope with a diagonal line."""
+    from min_circle.welzl import perpendicular_slope
+
+    p1 = np.array([0, 0])
+    p2 = np.array([2, 2])  # 45-degree line, slope = 1
+    slope = perpendicular_slope(p1, p2)
+    # Perpendicular to slope 1 should be -1
+    assert slope == pytest.approx(-1.0, rel=1e-9)
+
+
+def test_min_circle_welzl_with_numpy_array() -> None:
+    """Test min_circle_welzl accepts numpy array input."""
+    p = np.array([[0, 0], [4, 0], [2, 4]])
+    circle = min_circle_welzl(p)
+    assert circle.radius == pytest.approx(2.5, rel=1e-6)
+    assert circle.center == pytest.approx([2.0, 1.5], rel=1e-6)
