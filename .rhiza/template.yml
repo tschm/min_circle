@@ -20,3 +20,4 @@ exclude:
 - .github/workflows/rhiza_benchmarks.yml
 - .rhiza/docs
 - .github/dependabot.yml
+- tests/test_rhiza
