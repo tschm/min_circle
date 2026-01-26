@@ -47,7 +47,8 @@ def make_circle_n_points(matrix: list[np.ndarray]) -> Circle:
     if num_points == 2 or num_points == 3:
         return min_circle_cvx(np.array(matrix), solver="CLARABEL")
 
-    raise ValueError(f"Expected 0-3 points, got {num_points}")
+    msg = f"Expected 0-3 points, got {num_points}"
+    raise ValueError(msg)
 
     # if num_points == 2:
     #    # Two points: the center is the midpoint, radius is half the distance

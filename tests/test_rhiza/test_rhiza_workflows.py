@@ -17,6 +17,7 @@ import subprocess
 from pathlib import Path
 
 import pytest
+
 from tests.test_rhiza.conftest import run_make, setup_rhiza_git_repo, strip_ansi
 
 
