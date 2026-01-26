@@ -67,6 +67,6 @@ class Circle:
             x=circle_x,
             y=circle_y,
             mode="lines",
-            line=dict(color=color, width=2),
+            line={"color": color, "width": 2},
             name=f"Circle(r = {self.radius:.3f})",
         )

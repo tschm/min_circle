@@ -29,7 +29,8 @@ class Cloud:
         Raises:
             AssertionError: If the points array doesn't have shape (n, 2)
         """
-        assert len(self.points.shape) == 2 and self.points.shape[1] == 2, "Points must be a 2D array with shape (n, 2)"
+        assert len(self.points.shape) == 2, "Points must be a 2D array"
+        assert self.points.shape[1] == 2, "Points must have shape (n, 2)"
 
     def scatter(self, size: int = 10) -> go.Scatter:
         """Create a Plotly Scatter trace representing the point cloud.
@@ -44,6 +45,6 @@ class Cloud:
             x=self.points[:, 0],
             y=self.points[:, 1],
             mode="markers",
-            marker=dict(symbol="x", size=size, color="blue"),
+            marker={"symbol": "x", "size": size, "color": "blue"},
             name=f"Points ({len(self.points)})",
         )

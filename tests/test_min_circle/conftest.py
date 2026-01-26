@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 
-@pytest.fixture()
+@pytest.fixture
 def points() -> list[np.ndarray]:
     """Create a list of three 2D points forming a triangle.
 
@@ -18,4 +18,4 @@ def points() -> list[np.ndarray]:
     p1 = np.array([0, 0])
     p2 = np.array([4, 0])
     p3 = np.array([2, 4])
-    return list([p1, p2, p3])
+    return [p1, p2, p3]
