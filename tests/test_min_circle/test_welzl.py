@@ -116,7 +116,7 @@ def test_multiple_points() -> None:
     def f() -> Circle:
         return min_circle_welzl(list(pos))
 
-    times_welzl = timeit.repeat(f, number=1, repeat=100)
+    times_welzl = timeit.repeat(f, number=1, repeat=10)
     # Calculate and print the mean execution time
     print(f"Mean execution time: {statistics.mean(times_welzl):.6f} seconds")
 
