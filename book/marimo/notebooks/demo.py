@@ -16,7 +16,7 @@ the CVXPY implementation with the CLARABEL solver.
 # ]
 #
 # [tool.uv.sources]
-# min_circle = { path = "../..", editable=true }
+# min_circle = { path = "../../..", editable=true }
 #
 # ///
 
