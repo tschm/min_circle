@@ -42,7 +42,7 @@ def min_circle_mosek(points: np.ndarray, **kwargs: Any) -> Circle:
         https://github.com/MOSEK/Tutorials/blob/master/minimum-ellipsoid/minimum-ellipsoid.ipynb
     """
     try:
-        import mosek.fusion as mf  # type: ignore
+        import mosek.fusion as mf
     except Exception as exc:  # pragma: no cover - only hit when MOSEK is missing
         raise ImportError(_MOSEK_IMPORT_ERROR) from exc
 

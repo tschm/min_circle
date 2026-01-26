@@ -44,7 +44,7 @@ class Circle:
         Returns:
             True if the point is inside or on the circle boundary, False otherwise
         """
-        return np.linalg.norm(point - self.center) <= self.radius + tolerance
+        return bool(np.linalg.norm(point - self.center) <= self.radius + tolerance)
 
     def scatter(self, num: int = 100, color: str = "red") -> go.Scatter:
         """Create a Plotly Scatter trace representing the circle.

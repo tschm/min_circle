@@ -39,3 +39,6 @@ packages = ["src/min_circle"]
 [tool.deptry.package_module_name_map]
 cvxpy-base = ["cvxpy"]
 
+[tool.mypy]
+ignore_missing_imports = true
+
